@@ -1,0 +1,220 @@
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s;
+}
+
+.back-btn:hover {
+  color: var(--accent-color);
+}
+
+.back-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.status-badge {
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+}
+
+.status-badge.active { background-color: rgba(10, 132, 255, 0.2); color: #0a84ff; border: 1px solid rgba(10, 132, 255, 0.3); }
+.status-badge.pending { background-color: rgba(255, 149, 0, 0.2); color: #ff9500; border: 1px solid rgba(255, 149, 0, 0.3); }
+.status-badge.completed { background-color: rgba(52, 199, 89, 0.2); color: #34c759; border: 1px solid rgba(52, 199, 89, 0.3); }
+
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 25px;
+  margin-top: 20px;
+}
+
+.glass-card {
+  background: var(--secondary-color);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--glass-shadow);
+  padding: 25px;
+  border-radius: 24px;
+}
+
+.glass-card h3 {
+  font-family: 'Cairo', sans-serif;
+  font-size: 1.2rem;
+  color: var(--text-color);
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 10px;
+}
+
+/* Overview Card */
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  font-size: 1.05rem;
+}
+
+.info-row .label {
+  color: var(--text-muted);
+}
+
+.info-row .value {
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.text-accent {
+  color: var(--accent-color) !important;
+}
+
+.progress-section {
+  margin-top: 30px;
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-weight: bold;
+  color: var(--text-color);
+}
+
+.progress-bar-container {
+  height: 10px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-color), #f9e28f);
+  border-radius: 10px;
+  transition: width 1s ease-in-out;
+}
+
+/* Finance Card */
+.finance-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.stat .label {
+  color: var(--text-muted);
+  font-size: 1rem;
+}
+
+.stat .amount {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: var(--text-color);
+}
+
+.text-green { color: #34c759 !important; }
+.text-orange { color: #ff9500 !important; }
+
+/* Vault Card */
+.upload-zone {
+  border: 2px dashed var(--border-color);
+  border-radius: 16px;
+  padding: 30px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  background: rgba(255, 255, 255, 0.02);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-muted);
+}
+
+.upload-zone:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+
+.upload-icon {
+  width: 40px;
+  height: 40px;
+}
+
+.files-preview {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.file-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.file-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 0.8rem;
+}
+
+.pdf-icon { background: rgba(255, 59, 48, 0.2); color: #ff3b30; }
+.img-icon { background: rgba(10, 132, 255, 0.2); color: #0a84ff; }
+
+.file-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.file-name {
+  color: var(--text-color);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.file-size {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-muted);
+}

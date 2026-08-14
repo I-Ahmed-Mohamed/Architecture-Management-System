@@ -171,3 +171,73 @@
   background-color: rgba(52, 199, 89, 0.2);
   color: #34c759;
 }
+
+.bottom-dashboard-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+.timeline::-webkit-scrollbar {
+  width: 4px;
+}
+
+.timeline::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+}
+
+.timeline-item {
+  display: flex;
+  gap: 15px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  align-items: flex-start;
+}
+
+.timeline-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.project-activity { background: rgba(10, 132, 255, 0.2); }
+.contract-activity { background: rgba(212, 175, 55, 0.2); }
+.task-activity { background: rgba(52, 199, 89, 0.2); }
+.client-activity { background: rgba(175, 82, 222, 0.2); }
+.general-activity { background: rgba(255, 255, 255, 0.1); }
+
+.timeline-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.timeline-title {
+  color: var(--text-color);
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.timeline-date {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+

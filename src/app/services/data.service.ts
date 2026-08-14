@@ -1,6 +1,21 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { Client, Project, Contract } from '../models';
 
+export interface Task {
+  id: number;
+  title: string;
+  project: string;
+  status: string;
+  date: string;
+}
+
+export interface Activity {
+  id: string;
+  title: string;
+  date: Date;
+  type: 'project' | 'contract' | 'task' | 'client' | 'general';
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -20,6 +35,18 @@ export class DataService {
     { id: 'CTR-1025', clientId: '1', clientName: 'أحمد محمود', date: '12 أغسطس 2026', value: 50000, paid: 20000, status: 'signed' }
   ]);
 
+  tasks = signal<Task[]>([
+    { id: 1, title: 'معاينة فيلا التجمع', project: 'فيلا سكنية - التجمع الخامس', status: 'todo', date: '15 أغسطس 2026' },
+    { id: 2, title: 'تسليم مخططات 2D', project: 'مقر إداري - العاصمة الجديدة', status: 'in-progress', date: '16 أغسطس 2026' },
+    { id: 3, title: 'الاجتماع مع العميل لاختيار الخامات', project: 'شقة سكنية - الشيخ زايد', status: 'todo', date: '18 أغسطس 2026' },
+    { id: 4, title: 'اعتماد عقد التصميم', project: 'فيلا سكنية - التجمع الخامس', status: 'done', date: '12 أغسطس 2026' },
+  ]);
+
+  activities = signal<Activity[]>([
+    { id: '1', title: 'تم توقيع عقد جديد مع أحمد محمود', date: new Date('2026-08-12T10:30:00'), type: 'contract' },
+    { id: '2', title: 'تم البدء في مشروع فيلا سكنية - التجمع الخامس', date: new Date('2026-08-10T09:00:00'), type: 'project' },
+  ]);
+
   // Computed values for dashboard
   activeProjectsCount = computed(() => this.projects().filter(p => p.status === 'active').length);
   totalClientsCount = computed(() => this.clients().length);
@@ -29,6 +56,16 @@ export class DataService {
 
   constructor() { }
 
+  logActivity(title: string, type: Activity['type'] = 'general') {
+    const newActivity: Activity = {
+      id: Math.random().toString(36).substr(2, 9),
+      title,
+      date: new Date(),
+      type
+    };
+    this.activities.update(acts => [newActivity, ...acts]);
+  }
+
   addClient(client: Omit<Client, 'id' | 'dateAdded'>) {
     const newClient: Client = {
       ...client,
@@ -36,6 +73,7 @@ export class DataService {
       dateAdded: new Date().toLocaleDateString('ar-EG')
     };
     this.clients.update(clients => [...clients, newClient]);
+    this.logActivity(`تم إضافة عميل جديد: ${client.name}`, 'client');
   }
 
   addProject(project: Omit<Project, 'id' | 'startDate' | 'clientName'>) {
@@ -47,6 +85,7 @@ export class DataService {
       startDate: new Date().toLocaleDateString('ar-EG')
     };
     this.projects.update(projects => [...projects, newProject]);
+    this.logActivity(`تم إنشاء مشروع جديد: ${project.name}`, 'project');
   }
 
   addContract(contract: Omit<Contract, 'id' | 'date' | 'clientName' | 'paid'>) {
@@ -59,5 +98,16 @@ export class DataService {
       date: new Date().toLocaleDateString('ar-EG')
     };
     this.contracts.update(contracts => [...contracts, newContract]);
+    this.logActivity(`تم إنشاء عقد جديد للعميل: ${newContract.clientName}`, 'contract');
+  }
+
+  updateTaskStatus(taskId: number, newStatus: string) {
+    this.tasks.update(tasks => tasks.map(t => {
+      if (t.id === taskId) {
+        this.logActivity(`تم تغيير حالة المهمة "${t.title}" إلى ${newStatus === 'done' ? 'مكتملة' : 'جاري العمل'}`, 'task');
+        return { ...t, status: newStatus };
+      }
+      return t;
+    }));
   }
 }

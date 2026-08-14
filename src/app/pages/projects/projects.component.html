@@ -71,7 +71,11 @@
                 {{ project.status === 'active' ? 'جاري العمل' : (project.status === 'pending' ? 'بانتظار موافقة العميل' : 'مكتمل') }}
               </span>
             </td>
-            <td><button class="btn-outline" style="padding: 5px 10px; font-size: 0.8rem;">إدارة</button></td>
+            <td>
+              <button class="btn-outline" [routerLink]="['/projects', project.id]" style="padding: 5px 10px; font-size: 0.8rem; cursor: pointer;">
+                إدارة
+              </button>
+            </td>
           </tr>
         } @empty {
           <tr>

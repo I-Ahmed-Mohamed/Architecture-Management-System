@@ -107,38 +107,63 @@
   </div>
 </div>
 
-<div class="recent-section glass-card">
-  <h3>أحدث المشاريع المضافة</h3>
-  <div class="table-container">
-    <table class="system-table">
-      <thead>
-        <tr>
-          <th>اسم المشروع</th>
-          <th>العميل</th>
-          <th>المرحلة الحالية</th>
-          <th>تاريخ البدء</th>
-          <th>الحالة</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (project of dataService.projects(); track project.id) {
+<div class="bottom-dashboard-grid">
+  <div class="recent-section glass-card">
+    <h3>أحدث المشاريع المضافة</h3>
+    <div class="table-container">
+      <table class="system-table">
+        <thead>
           <tr>
-            <td>{{ project.name }}</td>
-            <td>{{ project.clientName }}</td>
-            <td>{{ project.phase }}</td>
-            <td>{{ project.startDate }}</td>
-            <td>
-              <span class="status" [class]="project.status">
-                {{ project.status === 'active' ? 'جاري العمل' : (project.status === 'pending' ? 'بانتظار موافقة العميل' : 'مكتمل') }}
-              </span>
-            </td>
+            <th>اسم المشروع</th>
+            <th>العميل</th>
+            <th>المرحلة الحالية</th>
+            <th>تاريخ البدء</th>
+            <th>الحالة</th>
           </tr>
-        } @empty {
-          <tr>
-            <td colspan="5" style="text-align: center; padding: 20px;">لا يوجد مشاريع حالياً.</td>
-          </tr>
-        }
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          @for (project of dataService.projects(); track project.id) {
+            <tr>
+              <td>{{ project.name }}</td>
+              <td>{{ project.clientName }}</td>
+              <td>{{ project.phase }}</td>
+              <td>{{ project.startDate }}</td>
+              <td>
+                <span class="status" [class]="project.status">
+                  {{ project.status === 'active' ? 'جاري العمل' : (project.status === 'pending' ? 'بانتظار موافقة العميل' : 'مكتمل') }}
+                </span>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="5" style="text-align: center; padding: 20px;">لا يوجد مشاريع حالياً.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="timeline-section glass-card">
+    <h3>سجل النشاطات (Live)</h3>
+    <div class="timeline">
+      @for (activity of dataService.activities(); track activity.id) {
+        <div class="timeline-item">
+          <div class="timeline-icon" [class]="activity.type + '-activity'">
+            @if (activity.type === 'project') { 🏗️ }
+            @else if (activity.type === 'contract') { 📝 }
+            @else if (activity.type === 'task') { ✅ }
+            @else if (activity.type === 'client') { 👥 }
+            @else { 🔔 }
+          </div>
+          <div class="timeline-content">
+            <p class="timeline-title">{{ activity.title }}</p>
+            <span class="timeline-date">{{ activity.date | date:'shortTime' }} - {{ activity.date | date:'shortDate' }}</span>
+          </div>
+        </div>
+      } @empty {
+        <p class="text-muted text-center" style="margin-top: 20px;">لا يوجد نشاطات مسجلة بعد.</p>
+      }
+    </div>
   </div>
 </div>

@@ -1,13 +1,13 @@
 import { Component, inject } from '@angular/core';
 import { DataService } from '../../services/data.service';
-import { CurrencyPipe } from '@angular/common';
+import { CurrencyPipe, DatePipe } from '@angular/common';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartOptions } from 'chart.js';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CurrencyPipe, BaseChartDirective],
+  imports: [CurrencyPipe, DatePipe, BaseChartDirective],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })

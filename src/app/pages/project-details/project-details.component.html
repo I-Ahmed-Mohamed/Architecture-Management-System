@@ -1,0 +1,115 @@
+@if (project) {
+  <div class="page-header">
+    <div class="header-left">
+      <a routerLink="/projects" class="back-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /> <!-- RTL back arrow -->
+        </svg>
+        رجوع
+      </a>
+      <h2 class="page-title">{{ project.name }}</h2>
+    </div>
+    <div class="page-actions">
+      <span class="status-badge" [class]="project.status">
+        {{ project.status === 'active' ? 'جاري العمل' : (project.status === 'pending' ? 'بانتظار موافقة العميل' : 'مكتمل') }}
+      </span>
+    </div>
+  </div>
+
+  <div class="details-grid">
+    
+    <!-- Progress & Overview -->
+    <div class="glass-card overview-card">
+      <h3>نظرة عامة ومعدل الإنجاز</h3>
+      
+      <div class="info-row">
+        <span class="label">العميل:</span>
+        <span class="value">{{ project.clientName }}</span>
+      </div>
+      <div class="info-row">
+        <span class="label">تاريخ البدء:</span>
+        <span class="value">{{ project.startDate | date:'longDate' }}</span>
+      </div>
+      <div class="info-row">
+        <span class="label">المرحلة الحالية:</span>
+        <span class="value text-accent">{{ project.phase }}</span>
+      </div>
+
+      <div class="progress-section">
+        <div class="progress-header">
+          <span>التقدم الكلي</span>
+          <span>{{ progressPercent }}%</span>
+        </div>
+        <div class="progress-bar-container">
+          <div class="progress-bar-fill" [style.width]="progressPercent + '%'"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Financials -->
+    <div class="glass-card finance-card">
+      <h3>الحالة المالية (المرتبطة بالعقد)</h3>
+      @if (contract) {
+        <div class="finance-stats">
+          <div class="stat">
+            <span class="label">إجمالي العقد</span>
+            <span class="amount">{{ contract.value | currency:'EGP':'symbol':'1.0-0' }}</span>
+          </div>
+          <div class="stat">
+            <span class="label">المدفوع</span>
+            <span class="amount text-green">{{ contract.paid | currency:'EGP':'symbol':'1.0-0' }}</span>
+          </div>
+          <div class="stat">
+            <span class="label">المتبقي</span>
+            <span class="amount text-orange">{{ (contract.value - contract.paid) | currency:'EGP':'symbol':'1.0-0' }}</span>
+          </div>
+        </div>
+      } @else {
+        <div class="empty-state">
+          لا يوجد عقد مسجل لهذا العميل بعد.
+          <br>
+          <a routerLink="/contracts" class="text-accent">الذهاب للعقود لإنشاء عقد</a>
+        </div>
+      }
+    </div>
+
+    <!-- Vault / Gallery (Drag & Drop Mock) -->
+    <div class="glass-card vault-card">
+      <h3>خزنة الملفات (Gallery & Vault)</h3>
+      <p class="text-muted" style="margin-bottom: 15px; font-size: 0.9rem;">
+        ارفع المخططات المعمارية (2D/3D) وصور الموقع هنا لمشاركتها مع فريقك.
+      </p>
+      
+      <div class="upload-zone" (click)="triggerUpload(fileInput)">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="upload-icon">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+        </svg>
+        <span>اسحب وأفلت الملفات هنا أو اضغط للاختيار</span>
+        <input type="file" #fileInput style="display: none" (change)="onFileSelected($event)">
+      </div>
+
+      <div class="files-preview">
+        <!-- Mock files -->
+        <div class="file-item">
+          <div class="file-icon pdf-icon">PDF</div>
+          <div class="file-info">
+            <span class="file-name">AutoCAD_Plan_v1.pdf</span>
+            <span class="file-size">2.4 MB</span>
+          </div>
+        </div>
+        <div class="file-item">
+          <div class="file-icon img-icon">IMG</div>
+          <div class="file-info">
+            <span class="file-name">3D_Render_Front.jpg</span>
+            <span class="file-size">4.1 MB</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+} @else {
+  <div class="empty-state">
+    <p>جاري تحميل بيانات المشروع...</p>
+  </div>
+}
