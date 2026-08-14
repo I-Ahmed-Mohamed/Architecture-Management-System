@@ -16,6 +16,7 @@ export class TopbarComponent implements OnInit {
   searchTerm = signal('');
   showResults = signal(false);
   searchResults = signal<any[]>([]);
+  showSettings = signal(false);
 
   ngOnInit() {
     // Check saved theme
@@ -53,5 +54,19 @@ export class TopbarComponent implements OnInit {
     const theme = this.isDarkMode() ? 'dark' : 'light';
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('theme', theme);
+  }
+
+  toggleSettings() {
+    this.showSettings.update(v => !v);
+  }
+
+  backupData() {
+    this.dataService.backupData();
+    this.showSettings.set(false);
+  }
+
+  deleteAllData() {
+    this.dataService.deleteAllData();
+    this.showSettings.set(false);
   }
 }

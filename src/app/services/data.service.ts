@@ -110,4 +110,35 @@ export class DataService {
       return t;
     }));
   }
+
+  deleteAllData() {
+    if (confirm('هل أنت متأكد من حذف جميع بيانات النظام؟ هذا الإجراء لا يمكن التراجع عنه.')) {
+      this.clients.set([]);
+      this.projects.set([]);
+      this.contracts.set([]);
+      this.tasks.set([]);
+      this.activities.set([]);
+      this.logActivity('تم مسح جميع بيانات النظام!', 'general');
+      alert('تم مسح البيانات بنجاح!');
+    }
+  }
+
+  backupData() {
+    const data = {
+      clients: this.clients(),
+      projects: this.projects(),
+      contracts: this.contracts(),
+      tasks: this.tasks(),
+      activities: this.activities()
+    };
+    const json = JSON.stringify(data, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `archfirm_backup_${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+    this.logActivity('تم تحميل نسخة احتياطية من البيانات', 'general');
+  }
 }
