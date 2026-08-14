@@ -23,11 +23,11 @@ export interface Asset {
 })
 export class AssetsComponent {
   assets = signal<Asset[]>([
-    { id: 'AST-001', name: 'لابتوب ديل XPS', category: 'أجهزة كمبيوتر', purchaseValue: 35000, purchaseDate: '2024-01-15', usefulLifeYears: 5, depreciationMethod: 'straight_line', assignedTo: 'أحمد محمد', status: 'good' },
-    { id: 'AST-002', name: 'شاشة عرض تفاعلية 65 بوصة', category: 'أجهزة مكتبية', purchaseValue: 22000, purchaseDate: '2023-06-10', usefulLifeYears: 5, depreciationMethod: 'straight_line', assignedTo: 'غرفة الاجتماعات', status: 'good' },
-    { id: 'AST-003', name: 'جهاز مساحة Leica Total Station', category: 'معدات هندسية', purchaseValue: 120000, purchaseDate: '2021-03-20', usefulLifeYears: 10, depreciationMethod: 'straight_line', assignedTo: 'محمود سعد', status: 'maintenance' },
-    { id: 'AST-004', name: 'طابعة ليزر HP A3', category: 'أجهزة مكتبية', purchaseValue: 15000, purchaseDate: '2025-01-05', usefulLifeYears: 4, depreciationMethod: 'straight_line', assignedTo: 'الإدارة', status: 'good' },
-    { id: 'AST-005', name: 'سيارة هيونداي (للموقع)', category: 'سيارات', purchaseValue: 850000, purchaseDate: '2022-08-01', usefulLifeYears: 5, depreciationMethod: 'straight_line', assignedTo: 'الشركة', status: 'good' }
+    { id: 'AST-001', name: 'لابتوب ديل XPS', category: 'أجهزة كمبيوتر', purchaseValue: 135000, purchaseDate: '2024-01-15', usefulLifeYears: 5, depreciationMethod: 'straight_line', assignedTo: 'أحمد محمد', status: 'good' },
+    { id: 'AST-002', name: 'شاشة عرض تفاعلية 65 بوصة', category: 'أجهزة مكتبية', purchaseValue: 122000, purchaseDate: '2023-06-10', usefulLifeYears: 5, depreciationMethod: 'straight_line', assignedTo: 'غرفة الاجتماعات', status: 'good' },
+    { id: 'AST-003', name: 'جهاز مساحة Leica Total Station', category: 'معدات هندسية', purchaseValue: 2200000, purchaseDate: '2021-03-20', usefulLifeYears: 10, depreciationMethod: 'straight_line', assignedTo: 'محمود سعد', status: 'maintenance' },
+    { id: 'AST-004', name: 'طابعة بلوتر HP A0', category: 'أجهزة مكتبية', purchaseValue: 450000, purchaseDate: '2025-01-05', usefulLifeYears: 4, depreciationMethod: 'straight_line', assignedTo: 'الإدارة', status: 'good' },
+    { id: 'AST-005', name: 'معدات بناء وحفار (للموقع)', category: 'سيارات', purchaseValue: 18500000, purchaseDate: '2022-08-01', usefulLifeYears: 5, depreciationMethod: 'straight_line', assignedTo: 'الشركة', status: 'good' }
   ]);
 
   viewMode = signal<'kanban' | 'list'>('kanban');

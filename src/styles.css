@@ -271,6 +271,11 @@ a {
   flex-shrink: 0;
 }
 
+.stat-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
 .stat-info {
   display: flex;
   flex-direction: column;
