@@ -1,13 +1,44 @@
 <!doctype html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="utf-8">
-  <title>ArchitectureFirm</title>
+  <title>نظام إدارة المكتب المعماري</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #000000; overflow: hidden; font-family: 'Outfit', 'Cairo', sans-serif; }
+    .global-loader {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background-color: #000000; z-index: 99999;
+      color: #ffffff;
+      transition: opacity 0.8s ease;
+    }
+    .spinner {
+      width: 50px; height: 50px;
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 50%;
+      border-top-color: #ffffff;
+      animation: spin 1s ease-in-out infinite;
+      margin-bottom: 20px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loader-text {
+      font-size: 1.2rem; font-weight: 300; letter-spacing: 2px;
+      background: linear-gradient(90deg, #fff, #888);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  </style>
 </head>
 <body>
-  <app-root></app-root>
+  <app-root>
+    <div class="global-loader" id="global-loader">
+      <div class="spinner"></div>
+      <div class="loader-text">INITIALIZING SYSTEM</div>
+    </div>
+  </app-root>
 </body>
 </html>

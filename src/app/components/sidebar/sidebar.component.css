@@ -11,15 +11,19 @@
 
 .brand-logo {
   display: flex;
-  justify-content: center;
   align-items: center;
+  gap: 15px;
   padding: 10px 0;
 }
 
-.brand-logo img {
-  max-width: 80%;
-  height: auto;
-  border-radius: 8px;
+.brand-text {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.5px;
 }
 
 .nav-menu {
@@ -60,9 +64,13 @@
 }
 
 .nav-link.active {
-  background-color: rgba(212, 175, 55, 0.15); /* Light gold bg */
-  color: var(--accent-color);
-  border-right: 4px solid var(--accent-color); /* RTL border */
+  background: var(--accent-gradient);
+  color: #ffffff;
+  box-shadow: 0 4px 15px rgba(10, 132, 255, 0.3);
+}
+
+.nav-link.active .icon {
+  color: #ffffff;
 }
 
 .sidebar-footer {
