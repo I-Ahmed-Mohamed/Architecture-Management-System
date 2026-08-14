@@ -33,6 +33,7 @@
 }
 
 .app-squircle {
+  position: relative;
   width: 64px;
   height: 64px;
   border-radius: 20px; /* Squircle effect */
@@ -40,14 +41,34 @@
   align-items: center;
   justify-content: center;
   color: white;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-  transition: all 0.3s ease;
+  box-shadow: 
+    0 8px 20px rgba(0,0,0,0.3),
+    inset 0 1px 2px rgba(255,255,255,0.4), /* Glossy top edge */
+    inset 0 -2px 5px rgba(0,0,0,0.2); /* Depth on bottom */
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  overflow: hidden;
+}
+
+/* Optional overlay for extra glossy shine */
+.app-squircle::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 100%);
+  pointer-events: none;
 }
 
 .app-squircle svg {
   width: 32px;
   height: 32px;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); /* Icon depth */
+  z-index: 1;
 }
+
+
 
 .app-title {
   color: var(--text-color);
