@@ -1,8 +1,10 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal, computed, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { Firestore, collection, collectionData, doc, addDoc, updateDoc, deleteDoc } from '@angular/fire/firestore';
 import { Client, Project, Contract } from '../models';
 
 export interface Task {
-  id: number;
+  id: string;
   title: string;
   project: string;
   status: string;
@@ -20,33 +22,35 @@ export interface Activity {
   providedIn: 'root'
 })
 export class DataService {
-  // Signals for state
-  clients = signal<Client[]>([
+  private firestore = inject(Firestore);
+
+  // Firestore Collections mapped to Signals
+  clients = toSignal(collectionData(collection(this.firestore, 'clients'), { idField: 'id' }), { initialValue: [
     { id: '1', name: 'أحمد محمود', phone: '01001234567', email: 'ahmed@example.com', dateAdded: '1 أغسطس 2026' },
     { id: '2', name: 'شركة الأفق', phone: '01119876543', email: 'info@alofoq.com', dateAdded: '15 يوليو 2026' }
-  ]);
+  ] }) as any;
 
-  projects = signal<Project[]>([
+  projects = toSignal(collectionData(collection(this.firestore, 'projects'), { idField: 'id' }), { initialValue: [
     { id: '101', clientId: '1', clientName: 'أحمد محمود', name: 'فيلا سكنية - التجمع الخامس', phase: 'التصميم المعماري 2D', startDate: '10 أغسطس 2026', status: 'active' },
     { id: '102', clientId: '2', clientName: 'شركة الأفق', name: 'مقر إداري - العاصمة الجديدة', phase: 'الإشراف على التشطيب', startDate: '1 يوليو 2026', status: 'active' }
-  ]);
+  ] }) as any;
 
-  contracts = signal<Contract[]>([
+  contracts = toSignal(collectionData(collection(this.firestore, 'contracts'), { idField: 'id' }), { initialValue: [
     { id: 'CTR-1025', clientId: '1', clientName: 'أحمد محمود', date: '12 أغسطس 2026', value: 25000000, paid: 12000000, status: 'signed' },
     { id: 'CTR-1026', clientId: '2', clientName: 'شركة الأفق', date: '1 يوليو 2026', value: 8500000, paid: 4000000, status: 'signed' }
-  ]);
+  ] }) as any;
 
-  tasks = signal<Task[]>([
-    { id: 1, title: 'معاينة فيلا التجمع', project: 'فيلا سكنية - التجمع الخامس', status: 'todo', date: '15 أغسطس 2026' },
-    { id: 2, title: 'تسليم مخططات 2D', project: 'مقر إداري - العاصمة الجديدة', status: 'in-progress', date: '16 أغسطس 2026' },
-    { id: 3, title: 'الاجتماع مع العميل لاختيار الخامات', project: 'شقة سكنية - الشيخ زايد', status: 'todo', date: '18 أغسطس 2026' },
-    { id: 4, title: 'اعتماد عقد التصميم', project: 'فيلا سكنية - التجمع الخامس', status: 'done', date: '12 أغسطس 2026' },
-  ]);
+  tasks = toSignal(collectionData(collection(this.firestore, 'tasks'), { idField: 'id' }), { initialValue: [
+    { id: '1', title: 'معاينة فيلا التجمع', project: 'فيلا سكنية - التجمع الخامس', status: 'todo', date: '15 أغسطس 2026' },
+    { id: '2', title: 'تسليم مخططات 2D', project: 'مقر إداري - العاصمة الجديدة', status: 'in-progress', date: '16 أغسطس 2026' },
+    { id: '3', title: 'الاجتماع مع العميل لاختيار الخامات', project: 'شقة سكنية - الشيخ زايد', status: 'todo', date: '18 أغسطس 2026' },
+    { id: '4', title: 'اعتماد عقد التصميم', project: 'فيلا سكنية - التجمع الخامس', status: 'done', date: '12 أغسطس 2026' }
+  ] }) as any;
 
-  activities = signal<Activity[]>([
+  activities = toSignal(collectionData(collection(this.firestore, 'activities'), { idField: 'id' }), { initialValue: [
     { id: '1', title: 'تم توقيع عقد جديد مع أحمد محمود', date: new Date('2026-08-12T10:30:00'), type: 'contract' },
-    { id: '2', title: 'تم البدء في مشروع فيلا سكنية - التجمع الخامس', date: new Date('2026-08-10T09:00:00'), type: 'project' },
-  ]);
+    { id: '2', title: 'تم البدء في مشروع فيلا سكنية - التجمع الخامس', date: new Date('2026-08-10T09:00:00'), type: 'project' }
+  ] }) as any;
 
   // Computed values for dashboard
   activeProjectsCount = computed(() => this.projects().filter(p => p.status === 'active').length);
@@ -58,70 +62,54 @@ export class DataService {
   constructor() { }
 
   logActivity(title: string, type: Activity['type'] = 'general') {
-    const newActivity: Activity = {
-      id: Math.random().toString(36).substr(2, 9),
+    addDoc(collection(this.firestore, 'activities'), {
       title,
-      date: new Date(),
+      date: new Date().toISOString(),
       type
-    };
-    this.activities.update(acts => [newActivity, ...acts]);
+    });
   }
 
   addClient(client: Omit<Client, 'id' | 'dateAdded'>) {
-    const newClient: Client = {
+    const newClient = {
       ...client,
-      id: Math.random().toString(36).substr(2, 9),
       dateAdded: new Date().toLocaleDateString('ar-EG')
     };
-    this.clients.update(clients => [...clients, newClient]);
+    addDoc(collection(this.firestore, 'clients'), newClient);
     this.logActivity(`تم إضافة عميل جديد: ${client.name}`, 'client');
   }
 
   addProject(project: Omit<Project, 'id' | 'startDate' | 'clientName'>) {
-    const client = this.clients().find(c => c.id === project.clientId);
-    const newProject: Project = {
+    const clientsList = this.clients() as any[];
+    const client = clientsList.find(c => c.id === project.clientId);
+    const newProject = {
       ...project,
       clientName: client ? client.name : 'غير معروف',
-      id: Math.random().toString(36).substr(2, 9),
       startDate: new Date().toLocaleDateString('ar-EG')
     };
-    this.projects.update(projects => [...projects, newProject]);
+    addDoc(collection(this.firestore, 'projects'), newProject);
     this.logActivity(`تم إنشاء مشروع جديد: ${project.name}`, 'project');
   }
 
   addContract(contract: Omit<Contract, 'id' | 'date' | 'clientName' | 'paid'>) {
-    const client = this.clients().find(c => c.id === contract.clientId);
-    const newContract: Contract = {
+    const clientsList = this.clients() as any[];
+    const client = clientsList.find(c => c.id === contract.clientId);
+    const newContract = {
       ...contract,
       clientName: client ? client.name : 'غير معروف',
       paid: 0,
-      id: 'CTR-' + Math.floor(Math.random() * 9000 + 1000),
       date: new Date().toLocaleDateString('ar-EG')
     };
-    this.contracts.update(contracts => [...contracts, newContract]);
+    addDoc(collection(this.firestore, 'contracts'), newContract);
     this.logActivity(`تم إنشاء عقد جديد للعميل: ${newContract.clientName}`, 'contract');
   }
 
-  updateTaskStatus(taskId: number, newStatus: string) {
-    this.tasks.update(tasks => tasks.map(t => {
-      if (t.id === taskId) {
-        this.logActivity(`تم تغيير حالة المهمة "${t.title}" إلى ${newStatus === 'done' ? 'مكتملة' : 'جاري العمل'}`, 'task');
-        return { ...t, status: newStatus };
-      }
-      return t;
-    }));
+  updateTaskStatus(taskId: string, newStatus: string) {
+    updateDoc(doc(this.firestore, 'tasks', taskId), { status: newStatus });
+    this.logActivity(`تم تغيير حالة المهمة إلى ${newStatus === 'done' ? 'مكتملة' : 'جاري العمل'}`, 'task');
   }
 
   deleteAllData() {
-    if (confirm('هل أنت متأكد من حذف جميع بيانات النظام؟ هذا الإجراء لا يمكن التراجع عنه.')) {
-      this.clients.set([]);
-      this.projects.set([]);
-      this.contracts.set([]);
-      this.tasks.set([]);
-      this.activities.set([]);
-      this.logActivity('تم مسح جميع بيانات النظام!', 'general');
-      alert('تم مسح البيانات بنجاح!');
-    }
+    alert('خاصية الحذف معطلة حاليا لحماية قاعدة البيانات السحابية');
   }
 
   backupData() {
