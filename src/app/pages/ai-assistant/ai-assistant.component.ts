@@ -1,5 +1,6 @@
 import { Component, signal, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 interface ChatMessage {
   text: string;
@@ -10,7 +11,7 @@ interface ChatMessage {
 @Component({
   selector: 'app-ai-assistant',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, CommonModule],
   templateUrl: './ai-assistant.component.html',
   styleUrl: './ai-assistant.component.css'
 })
