@@ -170,3 +170,48 @@ a:hover {
   background-color: rgba(0, 123, 255, 0.2);
   color: #007bff;
 }
+
+/* Global Forms */
+.form-card {
+  background-color: var(--secondary-color);
+  padding: 25px;
+  border-radius: 12px;
+  border: 1px solid #dee2e6;
+  margin-bottom: 30px;
+}
+
+.form-card h3 {
+  margin-bottom: 20px;
+}
+
+.system-form .form-group {
+  margin-bottom: 20px;
+}
+
+.system-form label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.system-form input, .system-form select {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  background-color: var(--bg-light);
+  color: var(--text-color);
+  font-family: inherit;
+  transition: border-color 0.3s;
+}
+
+.system-form input:focus, .system-form select:focus {
+  outline: none;
+  border-color: var(--accent-color);
+}
+
+.system-form button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

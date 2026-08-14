@@ -1,15 +1,46 @@
 <div class="page-header">
   <h2 class="page-title">العقود والتسعير</h2>
   <div class="page-actions">
-    <button class="btn">إنشاء عقد جديد +</button>
+    <button class="btn" (click)="toggleForm()">
+      @if (showForm()) { إلغاء } @else { إنشاء عقد جديد + }
+    </button>
   </div>
 </div>
 
+@if (showForm()) {
+  <div class="form-card">
+    <h3>إصدار عقد جديد</h3>
+    <form [formGroup]="contractForm" (ngSubmit)="onSubmit()" class="system-form">
+      <div class="form-group">
+        <label>العميل المستفيد</label>
+        <select formControlName="clientId">
+          <option value="" disabled selected>اختر العميل</option>
+          @for (client of dataService.clients(); track client.id) {
+            <option [value]="client.id">{{ client.name }}</option>
+          }
+        </select>
+      </div>
+      <div class="form-group">
+        <label>قيمة العقد (ج.م)</label>
+        <input type="number" formControlName="value" placeholder="أدخل إجمالي قيمة العقد">
+      </div>
+      <div class="form-group">
+        <label>حالة العقد</label>
+        <select formControlName="status">
+          <option value="draft">مسودة قيد المراجعة</option>
+          <option value="signed">موقع نهائي</option>
+        </select>
+      </div>
+      <button type="submit" class="btn" [disabled]="!contractForm.valid">إصدار وحفظ العقد</button>
+    </form>
+  </div>
+}
+
 <div class="recent-section" style="margin-bottom: 30px;">
   <h3>مسودة: عقد أتعاب التصميم والإشراف</h3>
-  <div style="background: var(--bg-color); padding: 20px; border-radius: 8px; border: 1px solid #dee2e6; margin-top: 15px;">
+  <div style="background: var(--bg-light); padding: 20px; border-radius: 8px; border: 1px solid #dee2e6; margin-top: 15px;">
     <h4 style="color: var(--accent-color); margin-bottom: 10px;">البنود الأساسية (قالب افتراضي):</h4>
-    <ul style="list-style: none; color: #ccc; line-height: 1.8;">
+    <ul style="list-style: none; color: var(--text-color); line-height: 1.8;">
       <li>✓ <strong>معاينة ورفع مقاسات:</strong> مجاناً عند التعاقد على التصميم، ومبلغ محدد في حالة عدم التعاقد مع استلام كروكي.</li>
       <li>✓ <strong>مخطط رسم تفصيلي + الفرش:</strong> شامل أكثر من اقتراح وبحد أقصى ٢ تعديل جزئي.</li>
       <li>✓ <strong>مقترحات 3D:</strong> تحسب للمتر المربع، وأي تعديلات جوهرية يتم تقديرها بشكل منفصل.</li>
@@ -35,14 +66,24 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>#CTR-1025</td>
-          <td>محمد كمال</td>
-          <td>12 أغسطس 2026</td>
-          <td>50,000 ج.م</td>
-          <td><span class="status active">موقع</span></td>
-          <td><button class="btn-outline" style="padding: 5px 10px; font-size: 0.8rem;">عرض PDF</button></td>
-        </tr>
+        @for (contract of dataService.contracts(); track contract.id) {
+          <tr>
+            <td>#{{ contract.id }}</td>
+            <td>{{ contract.clientName }}</td>
+            <td>{{ contract.date }}</td>
+            <td>{{ contract.value | currency:'EGP':'symbol':'1.0-0' }}</td>
+            <td>
+              <span class="status" [class.active]="contract.status === 'signed'" [class.pending]="contract.status === 'draft'">
+                {{ contract.status === 'signed' ? 'موقع' : 'مسودة' }}
+              </span>
+            </td>
+            <td><button class="btn-outline" style="padding: 5px 10px; font-size: 0.8rem;">عرض PDF</button></td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="6" style="text-align: center; padding: 20px;">لا يوجد عقود صادرة حالياً.</td>
+          </tr>
+        }
       </tbody>
     </table>
   </div>

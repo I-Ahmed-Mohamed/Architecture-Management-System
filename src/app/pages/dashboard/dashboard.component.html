@@ -10,7 +10,7 @@
     <div class="stat-icon">🏗️</div>
     <div class="stat-details">
       <h3>المشاريع الجارية</h3>
-      <p class="stat-value">12</p>
+      <p class="stat-value">{{ dataService.activeProjectsCount() }}</p>
     </div>
   </div>
   
@@ -18,7 +18,7 @@
     <div class="stat-icon">👥</div>
     <div class="stat-details">
       <h3>العملاء النشطين</h3>
-      <p class="stat-value">28</p>
+      <p class="stat-value">{{ dataService.totalClientsCount() }}</p>
     </div>
   </div>
   
@@ -26,7 +26,7 @@
     <div class="stat-icon">📝</div>
     <div class="stat-details">
       <h3>العقود قيد المراجعة</h3>
-      <p class="stat-value">4</p>
+      <p class="stat-value">{{ dataService.draftContractsCount() }}</p>
     </div>
   </div>
 
@@ -34,7 +34,7 @@
     <div class="stat-icon">💰</div>
     <div class="stat-details">
       <h3>الإيرادات المتوقعة</h3>
-      <p class="stat-value">---</p>
+      <p class="stat-value">{{ dataService.expectedRevenue() | currency:'EGP':'symbol':'1.0-0' }}</p>
     </div>
   </div>
 </div>
@@ -53,27 +53,23 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>فيلا سكنية - التجمع الخامس</td>
-          <td>أحمد محمود</td>
-          <td>التصميم المعماري 2D</td>
-          <td>10 أغسطس 2026</td>
-          <td><span class="status active">جاري العمل</span></td>
-        </tr>
-        <tr>
-          <td>مقر إداري - العاصمة الجديدة</td>
-          <td>شركة الأفق</td>
-          <td>الإشراف على التشطيب</td>
-          <td>1 يوليو 2026</td>
-          <td><span class="status active">جاري العمل</span></td>
-        </tr>
-        <tr>
-          <td>شقة سكنية - الشيخ زايد</td>
-          <td>محمد كمال</td>
-          <td>مقترحات الثري دي (3D)</td>
-          <td>5 أغسطس 2026</td>
-          <td><span class="status pending">بانتظار موافقة العميل</span></td>
-        </tr>
+        @for (project of dataService.projects(); track project.id) {
+          <tr>
+            <td>{{ project.name }}</td>
+            <td>{{ project.clientName }}</td>
+            <td>{{ project.phase }}</td>
+            <td>{{ project.startDate }}</td>
+            <td>
+              <span class="status" [class]="project.status">
+                {{ project.status === 'active' ? 'جاري العمل' : (project.status === 'pending' ? 'بانتظار موافقة العميل' : 'مكتمل') }}
+              </span>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="5" style="text-align: center; padding: 20px;">لا يوجد مشاريع حالياً.</td>
+          </tr>
+        }
       </tbody>
     </table>
   </div>
