@@ -175,6 +175,7 @@ a {
 .system-table th, .system-table td {
   padding: 16px;
   border-bottom: 1px solid var(--border-color);
+  white-space: nowrap;
 }
 
 .system-table th {
@@ -199,6 +200,8 @@ a {
   border-radius: 20px;
   font-size: 0.8rem;
   font-weight: 600;
+  display: inline-block;
+  white-space: nowrap;
 }
 
 .status.active { background: rgba(52, 199, 89, 0.15); color: #34C759; }
