@@ -1,3 +1,8 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
 .topbar {
   display: flex;
   justify-content: space-between;
@@ -9,24 +14,26 @@
 .search-bar {
   display: flex;
   align-items: center;
-  background-color: var(--secondary-color);
+  background-color: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--border-color);
-  border-radius: 30px; /* More rounded */
-  padding: 8px 20px;
-  width: 400px;
+  border-radius: 20px; /* Apple style capsule */
+  padding: 8px 16px;
+  width: 350px;
   transition: all 0.3s ease;
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+  backdrop-filter: blur(10px);
 }
 
 .search-bar:focus-within {
   border-color: var(--accent-color);
-  box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
+  background-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
 }
 
-.search-bar .icon {
+.search-bar svg {
+  width: 20px;
+  height: 20px;
   color: var(--text-muted);
   margin-left: 10px; /* RTL */
-  font-size: 1.1rem;
 }
 
 .search-bar input {
@@ -46,12 +53,12 @@
 .topbar-actions {
   display: flex;
   align-items: center;
-  gap: 25px;
+  gap: 20px;
 }
 
 .action-btn {
-  background: none;
-  border: none;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
   cursor: pointer;
   position: relative;
   display: flex;
@@ -61,30 +68,25 @@
   height: 40px;
   border-radius: 50%;
   transition: all 0.2s;
-  background-color: var(--secondary-color);
-  border: 1px solid var(--border-color);
+  backdrop-filter: blur(10px);
 }
 
 .action-btn:hover {
-  background-color: rgba(212, 175, 55, 0.1);
-  border-color: var(--accent-color);
-  color: var(--accent-color);
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: scale(1.05);
 }
 
-.action-btn .icon {
-  font-size: 1.2rem;
+.action-btn svg {
+  width: 20px;
+  height: 20px;
   color: var(--text-color);
-}
-
-.action-btn:hover .icon {
-  color: var(--accent-color);
 }
 
 .badge {
   position: absolute;
   top: -2px;
-  right: -2px; /* RTL */
-  background-color: #ff4757;
+  right: -2px;
+  background-color: #ff3b30; /* iOS Red */
   color: white;
   font-size: 0.7rem;
   font-weight: bold;
@@ -98,20 +100,20 @@
   align-items: center;
   gap: 12px;
   cursor: pointer;
-  padding: 5px 15px;
+  padding: 6px 16px 6px 6px; /* Padding adjusted for RTL */
   border-radius: 30px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
   transition: all 0.2s;
-  border: 1px solid transparent;
 }
 
 .user-profile:hover {
-  background-color: var(--secondary-color);
-  border-color: var(--border-color);
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .avatar {
-  width: 45px;
-  height: 45px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   background: linear-gradient(135deg, var(--accent-color), #b8860b);
   color: white;
@@ -119,22 +121,23 @@
   align-items: center;
   justify-content: center;
   font-weight: bold;
-  font-size: 1.2rem;
-  box-shadow: 0 4px 10px rgba(212, 175, 55, 0.3);
+  font-size: 1rem;
 }
 
 .user-info {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
 }
 
 .user-info .name {
-  font-weight: 700;
-  font-size: 1rem;
+  font-weight: 600;
+  font-size: 0.9rem;
   color: var(--text-color);
+  line-height: 1.2;
 }
 
 .user-info .role {
-  font-size: 0.8rem;
-  color: var(--accent-color);
+  font-size: 0.75rem;
+  color: var(--text-muted);
 }

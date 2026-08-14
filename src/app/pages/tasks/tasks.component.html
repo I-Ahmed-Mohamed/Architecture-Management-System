@@ -1,26 +1,48 @@
 <div class="page-header">
   <h2 class="page-title">لوحة المهام الذكية (Kanban)</h2>
   <div class="page-actions">
-    <button class="btn">إضافة مهمة جديدة +</button>
+    <button class="btn glass-btn">
+      <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+      </svg>
+      إضافة مهمة جديدة
+    </button>
   </div>
 </div>
 
 <div class="kanban-board">
   
   <!-- To Do Column -->
-  <div class="kanban-col">
+  <div class="kanban-col glass-card">
     <div class="col-header">
-      <h3>مهام مطلوبة</h3>
+      <div class="header-title">
+        <div class="dot gray-dot"></div>
+        <h3>مهام مطلوبة</h3>
+      </div>
       <span class="count">{{ getTasks('todo').length }}</span>
     </div>
     <div class="task-list">
       @for (task of getTasks('todo'); track task.id) {
         <div class="task-card">
           <h4>{{ task.title }}</h4>
-          <p class="task-project">{{ task.project }}</p>
+          <p class="task-project">
+            <svg class="mini-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+            </svg>
+            {{ task.project }}
+          </p>
           <div class="task-footer">
-            <span class="task-date">📅 {{ task.date }}</span>
-            <button class="icon-btn" (click)="moveTask(task, 'in-progress')" title="نقل إلى جاري العمل">➔</button>
+            <span class="task-date">
+              <svg class="mini-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              {{ task.date }}
+            </span>
+            <button class="icon-btn action-forward" (click)="moveTask(task, 'in-progress')" title="نقل إلى جاري العمل">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
           </div>
         </div>
       }
@@ -28,21 +50,42 @@
   </div>
 
   <!-- In Progress Column -->
-  <div class="kanban-col">
-    <div class="col-header in-progress-header">
-      <h3>جاري العمل</h3>
+  <div class="kanban-col glass-card">
+    <div class="col-header">
+      <div class="header-title">
+        <div class="dot blue-dot"></div>
+        <h3>جاري العمل</h3>
+      </div>
       <span class="count">{{ getTasks('in-progress').length }}</span>
     </div>
     <div class="task-list">
       @for (task of getTasks('in-progress'); track task.id) {
         <div class="task-card in-progress-card">
           <h4>{{ task.title }}</h4>
-          <p class="task-project">{{ task.project }}</p>
+          <p class="task-project">
+            <svg class="mini-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+            </svg>
+            {{ task.project }}
+          </p>
           <div class="task-footer">
-            <span class="task-date">📅 {{ task.date }}</span>
-            <div>
-              <button class="icon-btn" (click)="moveTask(task, 'todo')" title="إرجاع">←</button>
-              <button class="icon-btn" (click)="moveTask(task, 'done')" title="مكتمل">✓</button>
+            <span class="task-date">
+              <svg class="mini-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              {{ task.date }}
+            </span>
+            <div class="actions-group">
+              <button class="icon-btn action-back" (click)="moveTask(task, 'todo')" title="إرجاع">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <button class="icon-btn action-done" (click)="moveTask(task, 'done')" title="مكتمل">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+              </button>
             </div>
           </div>
         </div>
@@ -51,19 +94,36 @@
   </div>
 
   <!-- Done Column -->
-  <div class="kanban-col">
-    <div class="col-header done-header">
-      <h3>مكتملة</h3>
+  <div class="kanban-col glass-card">
+    <div class="col-header">
+      <div class="header-title">
+        <div class="dot green-dot"></div>
+        <h3>مكتملة</h3>
+      </div>
       <span class="count">{{ getTasks('done').length }}</span>
     </div>
     <div class="task-list">
       @for (task of getTasks('done'); track task.id) {
         <div class="task-card done-card">
           <h4>{{ task.title }}</h4>
-          <p class="task-project">{{ task.project }}</p>
+          <p class="task-project">
+            <svg class="mini-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+            </svg>
+            {{ task.project }}
+          </p>
           <div class="task-footer">
-            <span class="task-date">📅 {{ task.date }}</span>
-            <button class="icon-btn" (click)="moveTask(task, 'in-progress')" title="إرجاع">←</button>
+            <span class="task-date">
+              <svg class="mini-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              {{ task.date }}
+            </span>
+            <button class="icon-btn action-back" (click)="moveTask(task, 'in-progress')" title="إرجاع">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
           </div>
         </div>
       }

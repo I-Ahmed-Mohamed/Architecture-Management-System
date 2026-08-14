@@ -1,12 +1,14 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DataService } from '../../services/data.service';
-import { CurrencyPipe } from '@angular/common';
+import { CurrencyPipe, DatePipe } from '@angular/common';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 @Component({
   selector: 'app-contracts',
   standalone: true,
-  imports: [ReactiveFormsModule, CurrencyPipe],
+  imports: [ReactiveFormsModule, CurrencyPipe, DatePipe],
   templateUrl: './contracts.component.html',
   styleUrl: './contracts.component.css'
 })
@@ -15,6 +17,7 @@ export class ContractsComponent {
   fb = inject(FormBuilder);
 
   showForm = signal(false);
+  isGeneratingPDF = signal(false);
 
   contractForm = this.fb.group({
     clientId: ['', Validators.required],
@@ -35,6 +38,29 @@ export class ContractsComponent {
       });
       this.contractForm.reset({ status: 'draft', value: 0 });
       this.showForm.set(false);
+    }
+  }
+
+  async downloadPDF(contract: any, contractElement: HTMLElement) {
+    this.isGeneratingPDF.set(true);
+    try {
+      const canvas = await html2canvas(contractElement, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#ffffff' // White background for PDF
+      });
+      
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save(`contract-${contract.id}.pdf`);
+    } catch (error) {
+      console.error('Error generating PDF', error);
+    } finally {
+      this.isGeneratingPDF.set(false);
     }
   }
 }

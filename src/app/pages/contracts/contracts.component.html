@@ -1,18 +1,21 @@
 <div class="page-header">
   <h2 class="page-title">العقود والتسعير</h2>
   <div class="page-actions">
-    <button class="btn" (click)="toggleForm()">
-      @if (showForm()) { إلغاء } @else { إنشاء عقد جديد + }
+    <button class="btn glass-btn" (click)="toggleForm()">
+      <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+      </svg>
+      @if (showForm()) { إلغاء } @else { إنشاء عقد جديد }
     </button>
   </div>
 </div>
 
 @if (showForm()) {
-  <div class="form-card">
-    <h3>إصدار عقد جديد</h3>
+  <div class="form-card glass-card">
+    <h3>إنشاء عقد جديد</h3>
     <form [formGroup]="contractForm" (ngSubmit)="onSubmit()" class="system-form">
       <div class="form-group">
-        <label>العميل المستفيد</label>
+        <label>العميل (Client)</label>
         <select formControlName="clientId">
           <option value="" disabled selected>اختر العميل</option>
           @for (client of dataService.clients(); track client.id) {
@@ -21,74 +24,113 @@
         </select>
       </div>
       <div class="form-group">
-        <label>قيمة العقد (ج.م)</label>
-        <input type="number" formControlName="value" placeholder="أدخل إجمالي قيمة العقد">
+        <label>قيمة العقد (EGP)</label>
+        <input type="number" formControlName="value" placeholder="أدخل مبلغ العقد">
       </div>
       <div class="form-group">
         <label>حالة العقد</label>
         <select formControlName="status">
-          <option value="draft">مسودة قيد المراجعة</option>
-          <option value="signed">موقع نهائي</option>
+          <option value="draft">قيد المراجعة</option>
+          <option value="signed">مُعتمد (موقّع)</option>
         </select>
       </div>
-      <button type="submit" class="btn" [disabled]="!contractForm.valid">إصدار وحفظ العقد</button>
+      <button type="submit" class="btn" [disabled]="!contractForm.valid">حفظ العقد</button>
     </form>
   </div>
 }
 
-<div class="recent-section" style="margin-bottom: 30px;">
-  <h3>مسودة: عقد أتعاب التصميم والإشراف</h3>
-  <div style="background: var(--bg-light); padding: 20px; border-radius: 8px; border: 1px solid #dee2e6; margin-top: 15px;">
-    <h4 style="color: var(--accent-color); margin-bottom: 10px;">البنود الأساسية (قالب افتراضي):</h4>
-    <ul style="list-style: none; color: var(--text-color); line-height: 1.8;">
-      <li>✓ <strong>معاينة ورفع مقاسات:</strong> مجاناً عند التعاقد على التصميم، ومبلغ محدد في حالة عدم التعاقد مع استلام كروكي.</li>
-      <li>✓ <strong>مخطط رسم تفصيلي + الفرش:</strong> شامل أكثر من اقتراح وبحد أقصى ٢ تعديل جزئي.</li>
-      <li>✓ <strong>مقترحات 3D:</strong> تحسب للمتر المربع، وأي تعديلات جوهرية يتم تقديرها بشكل منفصل.</li>
-      <li>✓ <strong>الإشراف على التنفيذ:</strong> نسبة % من إجمالي التكاليف (خامات + مصنعية).</li>
-      <li>✓ <strong>مسؤولية الخامات:</strong> تسقط عن المهندس في حال توفير العميل لها أو إحضاره لفني التشطيب.</li>
-    </ul>
-    <button class="btn-outline" style="margin-top: 20px;">تعديل بنود القالب</button>
-  </div>
-</div>
+<div class="contracts-grid">
+  @for (contract of dataService.contracts(); track contract.id) {
+    <!-- The actual visible card -->
+    <div class="contract-card glass-card">
+      <div class="contract-header">
+        <div class="client-info">
+          <h4>{{ contract.clientName }}</h4>
+          <span class="date">{{ contract.date | date:'mediumDate' }}</span>
+        </div>
+        <span class="status-badge" [class]="contract.status">
+          {{ contract.status === 'signed' ? 'مُعتمد' : 'قيد المراجعة' }}
+        </span>
+      </div>
+      <div class="contract-body">
+        <div class="value-row">
+          <span class="label">قيمة العقد:</span>
+          <span class="amount">{{ contract.value | currency:'EGP':'symbol':'1.0-0' }}</span>
+        </div>
+        <div class="value-row">
+          <span class="label">المدفوع:</span>
+          <span class="amount text-green">{{ contract.paid | currency:'EGP':'symbol':'1.0-0' }}</span>
+        </div>
+      </div>
+      <div class="contract-footer">
+        <button class="action-btn download-btn" (click)="downloadPDF(contract, printableArea)" [disabled]="isGeneratingPDF()">
+          <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          @if (isGeneratingPDF()) { جاري التوليد... } @else { تحميل PDF }
+        </button>
+      </div>
+    </div>
 
-<div class="recent-section">
-  <h3>سجل العقود الصادرة</h3>
-  <div class="table-container">
-    <table class="system-table">
-      <thead>
-        <tr>
-          <th>رقم العقد</th>
-          <th>اسم العميل</th>
-          <th>تاريخ الإصدار</th>
-          <th>قيمة العقد</th>
-          <th>المدفوع</th>
-          <th>المتبقي</th>
-          <th>الحالة</th>
-          <th>إجراءات</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (contract of dataService.contracts(); track contract.id) {
-          <tr>
-            <td>#{{ contract.id }}</td>
-            <td>{{ contract.clientName }}</td>
-            <td>{{ contract.date }}</td>
-            <td>{{ contract.value | currency:'EGP':'symbol':'1.0-0' }}</td>
-            <td style="color: #28a745; font-weight: bold;">{{ contract.paid | currency:'EGP':'symbol':'1.0-0' }}</td>
-            <td style="color: #dc3545; font-weight: bold;">{{ (contract.value - contract.paid) | currency:'EGP':'symbol':'1.0-0' }}</td>
-            <td>
-              <span class="status" [class.active]="contract.status === 'signed'" [class.pending]="contract.status === 'draft'">
-                {{ contract.status === 'signed' ? 'موقع' : 'مسودة' }}
-              </span>
-            </td>
-            <td><button class="btn-outline" style="padding: 5px 10px; font-size: 0.8rem;">عرض PDF</button></td>
-          </tr>
-        } @empty {
-          <tr>
-            <td colspan="6" style="text-align: center; padding: 20px;">لا يوجد عقود صادرة حالياً.</td>
-          </tr>
-        }
-      </tbody>
-    </table>
-  </div>
+    <!-- Hidden Printable Area for the PDF (White background, standard fonts) -->
+    <div style="position: absolute; left: -9999px; top: -9999px;">
+      <div #printableArea class="pdf-template" style="width: 800px; padding: 40px; background-color: #ffffff; color: #000000; font-family: 'Cairo', sans-serif; direction: rtl;">
+        <div style="text-align: center; border-bottom: 2px solid #d4af37; padding-bottom: 20px; margin-bottom: 30px;">
+          <h1 style="color: #000000; margin: 0;">NEST DESIGNS</h1>
+          <p style="color: #666666; margin: 5px 0 0 0;">عقد اتفاق وتقديم خدمات استشارية وتصميمات</p>
+        </div>
+        
+        <div style="margin-bottom: 30px;">
+          <h2 style="color: #1a1a1a; font-size: 18px; border-right: 4px solid #d4af37; padding-right: 10px;">بيانات التعاقد</h2>
+          <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+            <tr>
+              <td style="padding: 10px; border: 1px solid #eeeeee; font-weight: bold; width: 30%;">اسم العميل:</td>
+              <td style="padding: 10px; border: 1px solid #eeeeee;">{{ contract.clientName }}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px; border: 1px solid #eeeeee; font-weight: bold;">تاريخ التعاقد:</td>
+              <td style="padding: 10px; border: 1px solid #eeeeee;">{{ contract.date | date:'mediumDate' }}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px; border: 1px solid #eeeeee; font-weight: bold;">حالة العقد:</td>
+              <td style="padding: 10px; border: 1px solid #eeeeee;">{{ contract.status === 'signed' ? 'مُعتمد وموثق' : 'مسودة قيد المراجعة' }}</td>
+            </tr>
+          </table>
+        </div>
+
+        <div style="margin-bottom: 30px;">
+          <h2 style="color: #1a1a1a; font-size: 18px; border-right: 4px solid #d4af37; padding-right: 10px;">الشئون المالية</h2>
+          <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+            <tr>
+              <td style="padding: 10px; border: 1px solid #eeeeee; font-weight: bold; width: 30%;">إجمالي قيمة العقد:</td>
+              <td style="padding: 10px; border: 1px solid #eeeeee; font-size: 18px;">{{ contract.value | currency:'EGP':'symbol':'1.0-0' }}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px; border: 1px solid #eeeeee; font-weight: bold;">الدفعة المقدمة (المدفوع):</td>
+              <td style="padding: 10px; border: 1px solid #eeeeee;">{{ contract.paid | currency:'EGP':'symbol':'1.0-0' }}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px; border: 1px solid #eeeeee; font-weight: bold;">المتبقي:</td>
+              <td style="padding: 10px; border: 1px solid #eeeeee;">{{ (contract.value - contract.paid) | currency:'EGP':'symbol':'1.0-0' }}</td>
+            </tr>
+          </table>
+        </div>
+
+        <div style="margin-top: 60px; display: flex; justify-content: space-between; padding: 0 40px;">
+          <div style="text-align: center;">
+            <p style="font-weight: bold;">توقيع العميل</p>
+            <p style="margin-top: 40px;">_________________________</p>
+          </div>
+          <div style="text-align: center;">
+            <p style="font-weight: bold;">إدارة Nest Designs</p>
+            <p style="margin-top: 40px;">_________________________</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  } @empty {
+    <div class="empty-state glass-card">
+      <p>لا يوجد عقود حالياً.</p>
+    </div>
+  }
 </div>

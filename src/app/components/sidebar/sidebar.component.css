@@ -1,15 +1,12 @@
 .sidebar {
+  padding: 20px;
   display: flex;
   flex-direction: column;
   height: 100%;
-  color: var(--text-color);
-  padding: 20px 0;
 }
 
 .sidebar-header {
-  padding: 0 20px 30px;
-  border-bottom: 1px solid #dee2e6;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 
 .brand-logo {
@@ -22,7 +19,7 @@
 .brand-logo img {
   max-width: 80%;
   height: auto;
-  border-radius: 8px; /* Optional, depends on logo */
+  border-radius: 8px;
 }
 
 .nav-menu {
@@ -30,36 +27,60 @@
   flex-grow: 1;
 }
 
+.nav-menu li {
+  margin-bottom: 10px;
+}
+
 .nav-link {
   display: flex;
   align-items: center;
-  gap: 15px;
-  padding: 15px 25px;
+  padding: 12px 15px;
+  border-radius: 12px;
   color: var(--text-color);
-  transition: all 0.3s;
-  border-right: 3px solid transparent; /* Right border for RTL */
+  font-weight: 600;
+  gap: 15px;
+  transition: all var(--transition-speed);
+}
+
+.nav-link .icon {
+  width: 24px;
+  height: 24px;
+  color: var(--text-muted);
+  transition: color var(--transition-speed);
 }
 
 .nav-link:hover {
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: rgba(255, 255, 255, 0.05);
+  transform: translateX(-5px); /* RTL movement */
+}
+
+.nav-link:hover .icon,
+.nav-link.active .icon {
   color: var(--accent-color);
 }
 
 .nav-link.active {
-  background-color: rgba(212, 175, 55, 0.1);
+  background-color: rgba(212, 175, 55, 0.15); /* Light gold bg */
   color: var(--accent-color);
-  border-right-color: var(--accent-color);
-}
-
-.icon {
-  font-size: 1.2rem;
+  border-right: 4px solid var(--accent-color); /* RTL border */
 }
 
 .sidebar-footer {
-  padding: 20px;
-  border-top: 1px solid #dee2e6;
+  margin-top: auto;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-color);
+}
+
+.logout {
+  color: #ff3b30; /* iOS Red */
+}
+
+.logout .icon {
+  color: #ff3b30;
 }
 
 .logout:hover {
-  color: #ff4d4d;
+  background-color: rgba(255, 59, 48, 0.1);
+  color: #ff3b30;
+  transform: translateX(-5px);
 }
