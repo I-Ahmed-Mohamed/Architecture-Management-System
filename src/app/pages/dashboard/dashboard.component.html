@@ -1,5 +1,5 @@
 <div class="page-header">
-  <h2 class="page-title">نظرة عامة</h2>
+  <h2 class="page-title">لوحة التحليلات الذكية</h2>
   <div class="page-actions">
     <button class="btn">إضافة مشروع جديد +</button>
   </div>
@@ -31,11 +31,39 @@
   </div>
 
   <div class="stat-card">
+    <div class="stat-icon">💸</div>
+    <div class="stat-details">
+      <h3>الإيرادات المحصلة</h3>
+      <p class="stat-value" style="color: #28a745">{{ dataService.collectedRevenue() | currency:'EGP':'symbol':'1.0-0' }}</p>
+    </div>
+  </div>
+
+  <div class="stat-card">
     <div class="stat-icon">💰</div>
     <div class="stat-details">
-      <h3>الإيرادات المتوقعة</h3>
+      <h3>إجمالي قيمة العقود</h3>
       <p class="stat-value">{{ dataService.expectedRevenue() | currency:'EGP':'symbol':'1.0-0' }}</p>
     </div>
+  </div>
+</div>
+
+<div class="charts-container" style="display: flex; gap: 20px; margin-bottom: 30px; flex-wrap: wrap;">
+  <div class="chart-box" style="flex: 2; background: var(--secondary-color); padding: 20px; border-radius: 12px; border: 1px solid #dee2e6;">
+    <h3 style="margin-bottom: 15px;">نمو الإيرادات (2026)</h3>
+    <canvas baseChart
+      [data]="barChartData"
+      [options]="barChartOptions"
+      [type]="'bar'">
+    </canvas>
+  </div>
+  
+  <div class="chart-box" style="flex: 1; background: var(--secondary-color); padding: 20px; border-radius: 12px; border: 1px solid #dee2e6;">
+    <h3 style="margin-bottom: 15px;">توزيع مراحل المشاريع</h3>
+    <canvas baseChart
+      [data]="pieChartData"
+      [options]="pieChartOptions"
+      [type]="'pie'">
+    </canvas>
   </div>
 </div>
 

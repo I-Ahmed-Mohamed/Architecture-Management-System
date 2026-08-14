@@ -17,7 +17,7 @@ export class DataService {
   ]);
 
   contracts = signal<Contract[]>([
-    { id: 'CTR-1025', clientId: '1', clientName: 'أحمد محمود', date: '12 أغسطس 2026', value: 50000, status: 'signed' }
+    { id: 'CTR-1025', clientId: '1', clientName: 'أحمد محمود', date: '12 أغسطس 2026', value: 50000, paid: 20000, status: 'signed' }
   ]);
 
   // Computed values for dashboard
@@ -25,6 +25,7 @@ export class DataService {
   totalClientsCount = computed(() => this.clients().length);
   draftContractsCount = computed(() => this.contracts().filter(c => c.status === 'draft').length);
   expectedRevenue = computed(() => this.contracts().reduce((sum, c) => sum + c.value, 0));
+  collectedRevenue = computed(() => this.contracts().reduce((sum, c) => sum + c.paid, 0));
 
   constructor() { }
 
@@ -48,11 +49,12 @@ export class DataService {
     this.projects.update(projects => [...projects, newProject]);
   }
 
-  addContract(contract: Omit<Contract, 'id' | 'date' | 'clientName'>) {
+  addContract(contract: Omit<Contract, 'id' | 'date' | 'clientName' | 'paid'>) {
     const client = this.clients().find(c => c.id === contract.clientId);
     const newContract: Contract = {
       ...contract,
       clientName: client ? client.name : 'غير معروف',
+      paid: 0,
       id: 'CTR-' + Math.floor(Math.random() * 9000 + 1000),
       date: new Date().toLocaleDateString('ar-EG')
     };

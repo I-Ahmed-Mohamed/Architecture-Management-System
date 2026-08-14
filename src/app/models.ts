@@ -22,5 +22,6 @@ export interface Contract {
   clientName: string;
   date: string;
   value: number;
+  paid: number;
   status: 'draft' | 'signed';
 }

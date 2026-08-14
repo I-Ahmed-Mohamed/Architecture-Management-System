@@ -61,6 +61,8 @@
           <th>اسم العميل</th>
           <th>تاريخ الإصدار</th>
           <th>قيمة العقد</th>
+          <th>المدفوع</th>
+          <th>المتبقي</th>
           <th>الحالة</th>
           <th>إجراءات</th>
         </tr>
@@ -72,6 +74,8 @@
             <td>{{ contract.clientName }}</td>
             <td>{{ contract.date }}</td>
             <td>{{ contract.value | currency:'EGP':'symbol':'1.0-0' }}</td>
+            <td style="color: #28a745; font-weight: bold;">{{ contract.paid | currency:'EGP':'symbol':'1.0-0' }}</td>
+            <td style="color: #dc3545; font-weight: bold;">{{ (contract.value - contract.paid) | currency:'EGP':'symbol':'1.0-0' }}</td>
             <td>
               <span class="status" [class.active]="contract.status === 'signed'" [class.pending]="contract.status === 'draft'">
                 {{ contract.status === 'signed' ? 'موقع' : 'مسودة' }}

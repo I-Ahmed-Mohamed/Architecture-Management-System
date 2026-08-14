@@ -1,0 +1,73 @@
+<div class="page-header">
+  <h2 class="page-title">لوحة المهام الذكية (Kanban)</h2>
+  <div class="page-actions">
+    <button class="btn">إضافة مهمة جديدة +</button>
+  </div>
+</div>
+
+<div class="kanban-board">
+  
+  <!-- To Do Column -->
+  <div class="kanban-col">
+    <div class="col-header">
+      <h3>مهام مطلوبة</h3>
+      <span class="count">{{ getTasks('todo').length }}</span>
+    </div>
+    <div class="task-list">
+      @for (task of getTasks('todo'); track task.id) {
+        <div class="task-card">
+          <h4>{{ task.title }}</h4>
+          <p class="task-project">{{ task.project }}</p>
+          <div class="task-footer">
+            <span class="task-date">📅 {{ task.date }}</span>
+            <button class="icon-btn" (click)="moveTask(task, 'in-progress')" title="نقل إلى جاري العمل">➔</button>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- In Progress Column -->
+  <div class="kanban-col">
+    <div class="col-header in-progress-header">
+      <h3>جاري العمل</h3>
+      <span class="count">{{ getTasks('in-progress').length }}</span>
+    </div>
+    <div class="task-list">
+      @for (task of getTasks('in-progress'); track task.id) {
+        <div class="task-card in-progress-card">
+          <h4>{{ task.title }}</h4>
+          <p class="task-project">{{ task.project }}</p>
+          <div class="task-footer">
+            <span class="task-date">📅 {{ task.date }}</span>
+            <div>
+              <button class="icon-btn" (click)="moveTask(task, 'todo')" title="إرجاع">←</button>
+              <button class="icon-btn" (click)="moveTask(task, 'done')" title="مكتمل">✓</button>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Done Column -->
+  <div class="kanban-col">
+    <div class="col-header done-header">
+      <h3>مكتملة</h3>
+      <span class="count">{{ getTasks('done').length }}</span>
+    </div>
+    <div class="task-list">
+      @for (task of getTasks('done'); track task.id) {
+        <div class="task-card done-card">
+          <h4>{{ task.title }}</h4>
+          <p class="task-project">{{ task.project }}</p>
+          <div class="task-footer">
+            <span class="task-date">📅 {{ task.date }}</span>
+            <button class="icon-btn" (click)="moveTask(task, 'in-progress')" title="إرجاع">←</button>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+</div>
