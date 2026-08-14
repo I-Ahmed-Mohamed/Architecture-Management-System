@@ -1,21 +1,26 @@
-import { Component, OnInit, signal, inject, HostListener } from '@angular/core';
+import { Component, OnInit, signal, inject } from '@angular/core';
 import { DataService } from '../../services/data.service';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router, NavigationEnd } from '@angular/router';
+import { Location, CommonModule } from '@angular/common';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-topbar',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, CommonModule],
   templateUrl: './topbar.component.html',
   styleUrl: './topbar.component.css'
 })
 export class TopbarComponent implements OnInit {
   isDarkMode = signal(true);
   dataService = inject(DataService);
+  location = inject(Location);
+  router = inject(Router);
   
   searchTerm = signal('');
   showResults = signal(false);
   searchResults = signal<any[]>([]);
+  showBackButton = signal(false);
 
   ngOnInit() {
     // Check saved theme
@@ -26,6 +31,18 @@ export class TopbarComponent implements OnInit {
     } else {
       document.documentElement.setAttribute('data-theme', 'dark');
     }
+
+    // Monitor routing for Back button
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: any) => {
+      // Hide on dashboard
+      this.showBackButton.set(event.urlAfterRedirects !== '/dashboard');
+    });
+  }
+
+  goBack() {
+    this.location.back();
   }
 
   onSearch(event: any) {
