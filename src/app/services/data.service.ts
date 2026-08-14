@@ -33,7 +33,7 @@ export class DataService {
 
   contracts = signal<Contract[]>([
     { id: 'CTR-1025', clientId: '1', clientName: 'أحمد محمود', date: '12 أغسطس 2026', value: 25000000, paid: 12000000, status: 'signed' },
-    { id: 'CTR-1026', clientId: '2', clientName: 'شركة الأفق', date: '1 يوليو 2026', value: 8500000, paid: 4000000, status: 'active' }
+    { id: 'CTR-1026', clientId: '2', clientName: 'شركة الأفق', date: '1 يوليو 2026', value: 8500000, paid: 4000000, status: 'signed' }
   ]);
 
   tasks = signal<Task[]>([
