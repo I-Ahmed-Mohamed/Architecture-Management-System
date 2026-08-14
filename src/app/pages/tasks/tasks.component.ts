@@ -1,10 +1,11 @@
 import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { DataService } from '../../services/data.service';
 
 @Component({
   selector: 'app-tasks',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './tasks.component.html',
   styleUrl: './tasks.component.css'
 })
