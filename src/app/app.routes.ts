@@ -5,6 +5,13 @@ import { ProjectsComponent } from './pages/projects/projects.component';
 import { ContractsComponent } from './pages/contracts/contracts.component';
 import { TasksComponent } from './pages/tasks/tasks.component';
 import { ProjectDetailsComponent } from './pages/project-details/project-details.component';
+import { AccountsComponent } from './pages/accounts/accounts.component';
+import { HrComponent } from './pages/hr/hr.component';
+import { TreasuryComponent } from './pages/treasury/treasury.component';
+import { AssetsComponent } from './pages/assets/assets.component';
+import { ReportsComponent } from './pages/reports/reports.component';
+import { AiAssistantComponent } from './pages/ai-assistant/ai-assistant.component';
+import { SettingsComponent } from './pages/settings/settings.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -14,5 +21,12 @@ export const routes: Routes = [
   { path: 'projects/:id', component: ProjectDetailsComponent },
   { path: 'contracts', component: ContractsComponent },
   { path: 'tasks', component: TasksComponent },
+  { path: 'accounts', component: AccountsComponent },
+  { path: 'hr', component: HrComponent },
+  { path: 'treasury', component: TreasuryComponent },
+  { path: 'assets', component: AssetsComponent },
+  { path: 'reports', component: ReportsComponent },
+  { path: 'ai-assistant', component: AiAssistantComponent },
+  { path: 'settings', component: SettingsComponent },
   { path: '**', redirectTo: 'dashboard' }
 ];
