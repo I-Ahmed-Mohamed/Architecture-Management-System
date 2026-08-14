@@ -1,8 +1,107 @@
 <div class="page-header">
   <h2 class="page-title">شئون العاملين (HR)</h2>
+  <div class="page-actions">
+    <button class="btn" (click)="toggleForm()">
+      @if (showForm()) { إلغاء } @else { إضافة موظف جديد + }
+    </button>
+  </div>
 </div>
-<div class="glass-card" style="padding: 40px; text-align: center;">
-  <div style="font-size: 3rem; margin-bottom: 20px;">👥</div>
-  <h3>نظام شئون العاملين تحت الإنشاء</h3>
-  <p style="color: var(--text-muted); margin-top: 10px;">سيتم إضافة إدارة الموظفين، الحضور والانصراف، والمرتبات هنا قريباً.</p>
+
+<div class="dashboard-grid" style="margin-bottom: 25px; grid-template-columns: repeat(3, 1fr);">
+  <div class="glass-card stat-card">
+    <div class="stat-icon" style="background: rgba(10, 132, 255, 0.2); color: #0A84FF;">👨‍💼</div>
+    <div class="stat-info">
+      <h3>إجمالي الموظفين</h3>
+      <p class="stat-value">{{ employees().length }}</p>
+    </div>
+  </div>
+
+  <div class="glass-card stat-card">
+    <div class="stat-icon" style="background: rgba(52, 199, 89, 0.2); color: #34C759;">🟢</div>
+    <div class="stat-info">
+      <h3>موظفون على رأس العمل</h3>
+      <p class="stat-value" style="color: #34C759;">{{ getActiveCount() }}</p>
+    </div>
+  </div>
+
+  <div class="glass-card stat-card">
+    <div class="stat-icon" style="background: rgba(255, 149, 0, 0.2); color: #FF9500;">🏖️</div>
+    <div class="stat-info">
+      <h3>في إجازة</h3>
+      <p class="stat-value" style="color: #FF9500;">{{ employees().length - getActiveCount() }}</p>
+    </div>
+  </div>
+</div>
+
+@if (showForm()) {
+  <div class="form-card" style="margin-bottom: 25px;">
+    <h3>إضافة موظف جديد</h3>
+    <form [formGroup]="empForm" (ngSubmit)="onSubmit()" class="system-form">
+      <div class="form-group">
+        <label>اسم الموظف</label>
+        <input type="text" formControlName="name" placeholder="الاسم الرباعي">
+      </div>
+      <div class="form-group">
+        <label>المسمى الوظيفي</label>
+        <input type="text" formControlName="role" placeholder="مهندس، محاسب، إداري...">
+      </div>
+      <div class="form-group">
+        <label>القسم</label>
+        <select formControlName="department">
+          <option value="">اختر القسم</option>
+          <option value="التصميم الهندسي">التصميم الهندسي</option>
+          <option value="الإشراف والتنفيذ">الإشراف والتنفيذ</option>
+          <option value="الإدارة المالية">الإدارة المالية</option>
+          <option value="الموارد البشرية">الموارد البشرية</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>الراتب الأساسي (ج.م)</label>
+        <input type="number" formControlName="salary" placeholder="0">
+      </div>
+      <button type="submit" class="btn" [disabled]="!empForm.valid">حفظ بيانات الموظف</button>
+    </form>
+  </div>
+}
+
+<div class="glass-card">
+  <h3 style="margin-bottom: 20px;">سجل الموظفين والمهندسين</h3>
+  <div class="table-container">
+    <table class="system-table">
+      <thead>
+        <tr>
+          <th>كود الموظف</th>
+          <th>الاسم</th>
+          <th>الوظيفة</th>
+          <th>القسم</th>
+          <th>الراتب</th>
+          <th>حالة العمل</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (emp of employees(); track emp.id) {
+          <tr>
+            <td style="font-family: monospace; color: var(--text-muted);">{{ emp.id }}</td>
+            <td style="font-weight: bold; color: var(--text-color);">{{ emp.name }}</td>
+            <td>{{ emp.role }}</td>
+            <td>{{ emp.department }}</td>
+            <td>{{ emp.salary }} ج.م</td>
+            <td>
+              @if (emp.status === 'active') {
+                <span class="status-badge done">على رأس العمل</span>
+              } @else if (emp.status === 'on_leave') {
+                <span class="status-badge todo" style="background: rgba(255,149,0,0.1); color: #FF9500; border-color: rgba(255,149,0,0.2);">في إجازة</span>
+              } @else {
+                <span class="status-badge" style="background: rgba(255,59,48,0.1); color: #FF3B30; border-color: rgba(255,59,48,0.2);">مستقيل</span>
+              }
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="6" style="text-align: center; padding: 20px;">لا يوجد موظفين مسجلين.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
 </div>

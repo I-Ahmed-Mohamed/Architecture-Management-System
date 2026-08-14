@@ -1,8 +1,42 @@
 <div class="page-header">
-  <h2 class="page-title">المساعد الذكي</h2>
+  <h2 class="page-title">المساعد الذكي (ArchFirm AI)</h2>
 </div>
-<div class="glass-card" style="padding: 40px; text-align: center;">
-  <div style="font-size: 3rem; margin-bottom: 20px;">🤖</div>
-  <h3>المساعد الذكي تحت الإنشاء</h3>
-  <p style="color: var(--text-muted); margin-top: 10px;">سيتم إضافة شات ذكي للتواصل مع النظام وتحليل البيانات بالذكاء الاصطناعي هنا قريباً.</p>
+
+<div class="glass-card chat-container">
+  <div class="chat-messages" #chatScroll>
+    @for (msg of messages(); track msg.time) {
+      <div class="message-wrapper" [class.user]="msg.sender === 'user'" [class.ai]="msg.sender === 'ai'">
+        <div class="avatar" *ngIf="msg.sender === 'ai'">🤖</div>
+        <div class="message-bubble">
+          <p>{{ msg.text }}</p>
+          <span class="time">{{ msg.time }}</span>
+        </div>
+        <div class="avatar user-avatar" *ngIf="msg.sender === 'user'">م</div>
+      </div>
+    }
+    
+    @if (isTyping()) {
+      <div class="message-wrapper ai">
+        <div class="avatar">🤖</div>
+        <div class="message-bubble typing-indicator">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="chat-input-area">
+    <div class="input-wrapper">
+      <input type="text" 
+             placeholder="اسألني عن مشاريعك، مهامك، أو التحليلات المالية..." 
+             [ngModel]="userInput()" 
+             (ngModelChange)="userInput.set($event)"
+             (keyup.enter)="sendMessage()">
+      <button class="send-btn" (click)="sendMessage()" [disabled]="!userInput().trim() || isTyping()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+        </svg>
+      </button>
+    </div>
+  </div>
 </div>

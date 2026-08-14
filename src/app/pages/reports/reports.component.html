@@ -1,8 +1,111 @@
 <div class="page-header">
   <h2 class="page-title">التقارير والإحصائيات</h2>
+  <div class="page-actions">
+    <button class="btn" style="background: #34C759;" (click)="exportExcel()">
+      <svg style="width: 18px; height: 18px; margin-left: 8px;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+      </svg>
+      تصدير Excel
+    </button>
+    <button class="btn" style="background: #FF3B30;" (click)="exportPDF()">
+      <svg style="width: 18px; height: 18px; margin-left: 8px;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+      </svg>
+      تصدير PDF
+    </button>
+  </div>
 </div>
-<div class="glass-card" style="padding: 40px; text-align: center;">
-  <div style="font-size: 3rem; margin-bottom: 20px;">📊</div>
-  <h3>نظام التقارير تحت الإنشاء</h3>
-  <p style="color: var(--text-muted); margin-top: 10px;">سيتم إضافة تقارير تفصيلية للأرباح والخسائر والضرائب هنا قريباً.</p>
+
+<div class="dashboard-grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 25px;">
+  <!-- Summary Cards -->
+  <div class="glass-card stat-card">
+    <div class="stat-info">
+      <h3 style="color: var(--text-muted); font-size: 0.9rem;">إجمالي الإيرادات السنوية</h3>
+      <p class="stat-value" style="color: #34C759; font-size: 1.5rem;">{{ 491000 | currency:'EGP':'symbol':'1.0-0' }}</p>
+    </div>
+  </div>
+  <div class="glass-card stat-card">
+    <div class="stat-info">
+      <h3 style="color: var(--text-muted); font-size: 0.9rem;">إجمالي المصروفات السنوية</h3>
+      <p class="stat-value" style="color: #FF3B30; font-size: 1.5rem;">{{ 248000 | currency:'EGP':'symbol':'1.0-0' }}</p>
+    </div>
+  </div>
+  <div class="glass-card stat-card">
+    <div class="stat-info">
+      <h3 style="color: var(--text-muted); font-size: 0.9rem;">صافي الأرباح</h3>
+      <p class="stat-value" style="color: #0A84FF; font-size: 1.5rem;">{{ 243000 | currency:'EGP':'symbol':'1.0-0' }}</p>
+    </div>
+  </div>
+  <div class="glass-card stat-card">
+    <div class="stat-info">
+      <h3 style="color: var(--text-muted); font-size: 0.9rem;">نسبة إنجاز المشاريع</h3>
+      <p class="stat-value" style="color: #FF9500; font-size: 1.5rem;">82%</p>
+    </div>
+  </div>
+</div>
+
+<div class="charts-container" style="display: grid; grid-template-columns: 2fr 1fr; gap: 25px;">
+  <!-- Bar Chart -->
+  <div class="glass-card chart-card">
+    <h3>التحليل المالي السنوي</h3>
+    <div class="chart-wrapper">
+      <canvas baseChart
+              [data]="barChartData"
+              [options]="barChartOptions"
+              [type]="'bar'">
+      </canvas>
+    </div>
+  </div>
+
+  <!-- Doughnut Chart -->
+  <div class="glass-card chart-card">
+    <h3>حالة المشاريع الحالية</h3>
+    <div class="chart-wrapper">
+      <canvas baseChart
+              [data]="doughnutChartData"
+              [options]="doughnutChartOptions"
+              [type]="'doughnut'">
+      </canvas>
+    </div>
+  </div>
+</div>
+
+<div class="glass-card" style="margin-top: 25px;">
+  <h3 style="margin-bottom: 20px;">التقرير المالي المفصل</h3>
+  <div class="table-container">
+    <table class="system-table">
+      <thead>
+        <tr>
+          <th>الشهر</th>
+          <th>الإيرادات</th>
+          <th>المصروفات</th>
+          <th>الصافي</th>
+          <th>معدل النمو</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>أغسطس 2026</td>
+          <td style="color: #34C759;">150,000 ج.م</td>
+          <td style="color: #FF3B30;">27,000 ج.م</td>
+          <td>123,000 ج.م</td>
+          <td style="color: #34C759;">+15% ↑</td>
+        </tr>
+        <tr>
+          <td>يوليو 2026</td>
+          <td style="color: #34C759;">56,000 ج.م</td>
+          <td style="color: #FF3B30;">86,000 ج.م</td>
+          <td style="color: #FF3B30;">-30,000 ج.م</td>
+          <td style="color: #FF3B30;">-12% ↓</td>
+        </tr>
+        <tr>
+          <td>يونيو 2026</td>
+          <td style="color: #34C759;">81,000 ج.م</td>
+          <td style="color: #FF3B30;">19,000 ج.م</td>
+          <td>62,000 ج.م</td>
+          <td style="color: #34C759;">+5% ↑</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>

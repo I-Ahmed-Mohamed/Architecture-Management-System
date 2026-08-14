@@ -1,8 +1,75 @@
 <div class="page-header">
-  <h2 class="page-title">إدارة الخزنة</h2>
+  <h2 class="page-title">حركة الخزينة والسيولة النقدية</h2>
+  <div class="page-actions">
+    <button class="btn" style="background: #34C759; margin-left: 10px;">وارد نقدية +</button>
+    <button class="btn" style="background: #FF3B30;">منصرف نقدية -</button>
+  </div>
 </div>
-<div class="glass-card" style="padding: 40px; text-align: center;">
-  <div style="font-size: 3rem; margin-bottom: 20px;">🏦</div>
-  <h3>نظام الخزنة تحت الإنشاء</h3>
-  <p style="color: var(--text-muted); margin-top: 10px;">سيتم إضافة حركة الوارد والصادر والرصيد الحالي هنا قريباً.</p>
+
+<div class="dashboard-grid" style="margin-bottom: 25px; grid-template-columns: repeat(3, 1fr);">
+  <div class="glass-card stat-card" style="border: 2px solid rgba(10, 132, 255, 0.3);">
+    <div class="stat-icon" style="background: rgba(10, 132, 255, 0.2); color: #0A84FF;">🏦</div>
+    <div class="stat-info">
+      <h3>رصيد الخزنة الحالي</h3>
+      <p class="stat-value" style="color: #0A84FF; font-size: 1.8rem;">{{ currentBalance() | currency:'EGP':'symbol':'1.0-0' }}</p>
+    </div>
+  </div>
+
+  <div class="glass-card stat-card">
+    <div class="stat-icon" style="background: rgba(52, 199, 89, 0.2); color: #34C759;">📥</div>
+    <div class="stat-info">
+      <h3>إجمالي الوارد اليوم</h3>
+      <p class="stat-value" style="color: #34C759;">{{ getTotalIn() | currency:'EGP':'symbol':'1.0-0' }}</p>
+    </div>
+  </div>
+
+  <div class="glass-card stat-card">
+    <div class="stat-icon" style="background: rgba(255, 59, 48, 0.2); color: #FF3B30;">📤</div>
+    <div class="stat-info">
+      <h3>إجمالي المنصرف اليوم</h3>
+      <p class="stat-value" style="color: #FF3B30;">{{ getTotalOut() | currency:'EGP':'symbol':'1.0-0' }}</p>
+    </div>
+  </div>
+</div>
+
+<div class="glass-card">
+  <h3 style="margin-bottom: 20px;">حركة الخزينة الأخيرة</h3>
+  <div class="table-container">
+    <table class="system-table">
+      <thead>
+        <tr>
+          <th>رقم الإيصال</th>
+          <th>تاريخ ووقت الحركة</th>
+          <th>نوع الحركة</th>
+          <th>المبلغ</th>
+          <th>البيان</th>
+          <th>المسؤول (العهدة)</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (mov of movements(); track mov.id) {
+          <tr>
+            <td style="font-family: monospace; color: var(--text-muted);">{{ mov.id }}</td>
+            <td>{{ mov.date | date:'dd/MM/yyyy hh:mm a' }}</td>
+            <td>
+              @if (mov.type === 'in') {
+                <span class="status-badge done" style="background: rgba(52,199,89,0.1); border: 1px solid rgba(52,199,89,0.2);">إيداع / وارد</span>
+              } @else {
+                <span class="status-badge" style="background: rgba(255,59,48,0.1); color: #FF3B30; border: 1px solid rgba(255,59,48,0.2);">صرف / صادر</span>
+              }
+            </td>
+            <td [style.color]="mov.type === 'in' ? '#34C759' : '#FF3B30'" style="font-weight: bold;">
+              {{ mov.type === 'in' ? '+' : '-' }} {{ mov.amount | currency:'EGP':'symbol':'1.0-0' }}
+            </td>
+            <td>{{ mov.reason }}</td>
+            <td>{{ mov.handledBy }}</td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="6" style="text-align: center; padding: 20px;">لا توجد حركات مسجلة.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
 </div>
