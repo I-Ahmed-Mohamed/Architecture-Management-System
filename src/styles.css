@@ -3,33 +3,37 @@
 /* Default Dark Theme (Ultra Premium Apple Style) */
 :root {
   --primary-color: #000000;
-  --secondary-color: rgba(28, 28, 30, 0.7);
+  --secondary-color: rgba(28, 28, 30, 0.45);
+  --glass-bg: rgba(28, 28, 30, 0.45);
   --accent-color: #0A84FF; /* iOS Blue */
   --accent-gradient: linear-gradient(135deg, #0A84FF, #5E5CE6);
   --text-color: #ffffff;
   --text-muted: rgba(235, 235, 245, 0.6);
   --bg-color: #000000;
   --bg-light: #000000; /* True black background */
-  --sidebar-bg: rgba(28, 28, 30, 0.4);
-  --border-color: rgba(255, 255, 255, 0.08);
+  --sidebar-bg: rgba(28, 28, 30, 0.45);
+  --border-color: rgba(255, 255, 255, 0.12);
+  --border-highlight: rgba(255, 255, 255, 0.15);
   --glass-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
   --transition-speed: 0.3s;
   --border-radius-lg: 20px;
   --border-radius-md: 14px;
 }
 
-/* Light Theme */
+/* Light Theme (Ultra Premium Apple Style) */
 :root[data-theme="light"] {
   --primary-color: #ffffff;
-  --secondary-color: rgba(255, 255, 255, 0.8);
+  --secondary-color: rgba(255, 255, 255, 0.6);
+  --glass-bg: rgba(255, 255, 255, 0.6);
   --accent-color: #007AFF; 
   --accent-gradient: linear-gradient(135deg, #007AFF, #5856D6);
   --text-color: #1C1C1E;
   --text-muted: #8E8E93;
-  --bg-color: #F2F2F7;
+  --bg-color: #F2F2F7; /* iOS Light Gray */
   --bg-light: #F2F2F7;
   --sidebar-bg: rgba(255, 255, 255, 0.6);
   --border-color: rgba(0, 0, 0, 0.05);
+  --border-highlight: rgba(255, 255, 255, 1);
   --glass-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
 }
 
@@ -98,6 +102,13 @@ a {
   border-radius: var(--border-radius-md);
   font-size: 0.95rem;
   box-shadow: 0 4px 15px rgba(10, 132, 255, 0.3);
+  white-space: nowrap;
+}
+
+.btn svg, .btn .icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
 }
 
 .btn:hover {
@@ -120,23 +131,21 @@ a {
 
 /* Glass Cards */
 .glass-card {
-  background: rgba(28, 28, 30, 0.45);
-  backdrop-filter: blur(50px) saturate(200%);
-  -webkit-backdrop-filter: blur(50px) saturate(200%);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: var(--glass-bg);
+  backdrop-filter: blur(40px) saturate(200%);
+  -webkit-backdrop-filter: blur(40px) saturate(200%);
+  border: 1px solid var(--border-color);
   box-shadow: 
-    0 20px 40px rgba(0, 0, 0, 0.4),
-    inset 0 1px 1px rgba(255, 255, 255, 0.15); /* Top lighting highlight */
+    0 15px 35px rgba(0, 0, 0, 0.2),
+    inset 0 1px 1px var(--border-highlight);
   border-radius: var(--border-radius-lg);
   padding: 24px;
   transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease;
 }
 
 :root[data-theme="light"] .glass-card {
-  background: rgba(255, 255, 255, 0.55);
-  border: 1px solid rgba(255, 255, 255, 1);
   box-shadow: 
-    0 15px 35px rgba(0, 0, 0, 0.05),
+    0 10px 30px rgba(0, 0, 0, 0.05),
     inset 0 1px 2px rgba(255, 255, 255, 0.8);
 }
 
