@@ -1,4 +1,20 @@
-<div class="page-header">
+<!-- App Grid (Command Center) -->
+<div class="app-grid-container">
+  <div class="app-grid">
+    @for (module of systemModules; track module.id) {
+      <a [routerLink]="module.link" class="app-item">
+        <div class="app-squircle" [style.backgroundColor]="module.color">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="module.icon" />
+          </svg>
+        </div>
+        <span class="app-title">{{ module.title }}</span>
+      </a>
+    }
+  </div>
+</div>
+
+<div class="page-header" style="margin-top: 30px;">
   <h2 class="page-title">لوحة التحليلات الذكية</h2>
   <div class="page-actions">
     <button class="btn glass-btn">

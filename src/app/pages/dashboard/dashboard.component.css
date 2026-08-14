@@ -1,5 +1,62 @@
 
 
+.app-grid-container {
+  margin-bottom: 30px;
+  padding: 10px 0;
+  overflow-x: auto;
+}
+
+.app-grid {
+  display: flex;
+  gap: 25px;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.app-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  width: 80px;
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.app-item:hover {
+  transform: translateY(-5px) scale(1.05);
+}
+
+.app-item:hover .app-squircle {
+  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+}
+
+.app-squircle {
+  width: 64px;
+  height: 64px;
+  border-radius: 20px; /* Squircle effect */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
+}
+
+.app-squircle svg {
+  width: 32px;
+  height: 32px;
+}
+
+.app-title {
+  color: var(--text-color);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+}
+
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
