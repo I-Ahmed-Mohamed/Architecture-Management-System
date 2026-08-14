@@ -1,82 +1,206 @@
 <div class="page-header">
-  <h2 class="page-title">إدارة الأصول والعهد</h2>
+  <h2 class="page-title">إدارة الأصول والعهد (Assets)</h2>
   <div class="page-actions">
-    <button class="btn">إضافة أصل جديد +</button>
+    <button class="btn" (click)="toggleForm()">
+      @if (showForm()) { إلغاء } @else { إضافة أصل جديد + }
+    </button>
   </div>
 </div>
 
-<div class="dashboard-grid" style="margin-bottom: 25px; grid-template-columns: repeat(4, 1fr);">
+<div class="dashboard-grid" style="margin-bottom: 25px; grid-template-columns: repeat(3, 1fr);">
   <div class="glass-card stat-card">
     <div class="stat-icon" style="background: rgba(10, 132, 255, 0.2); color: #0A84FF;">📦</div>
     <div class="stat-info">
-      <h3>إجمالي الأصول</h3>
+      <h3>إجمالي عدد الأصول</h3>
       <p class="stat-value">{{ assets().length }}</p>
     </div>
   </div>
 
   <div class="glass-card stat-card">
-    <div class="stat-icon" style="background: rgba(52, 199, 89, 0.2); color: #34C759;">🟢</div>
+    <div class="stat-icon" style="background: rgba(52, 199, 89, 0.2); color: #34C759;">💰</div>
     <div class="stat-info">
-      <h3>تعمل بحالة جيدة</h3>
-      <p class="stat-value" style="color: #34C759;">{{ assets().length - 1 }}</p>
+      <h3>إجمالي القيمة الشرائية (التاريخية)</h3>
+      <p class="stat-value" style="color: #34C759;">{{ getTotalAssetsValue() | currency:'EGP':'symbol':'1.0-0' }}</p>
     </div>
   </div>
 
   <div class="glass-card stat-card">
-    <div class="stat-icon" style="background: rgba(255, 149, 0, 0.2); color: #FF9500;">🛠️</div>
+    <div class="stat-icon" style="background: rgba(175, 82, 222, 0.2); color: #AF52DE;">📉</div>
     <div class="stat-info">
-      <h3>في الصيانة</h3>
-      <p class="stat-value" style="color: #FF9500;">1</p>
-    </div>
-  </div>
-
-  <div class="glass-card stat-card">
-    <div class="stat-icon" style="background: rgba(255, 59, 48, 0.2); color: #FF3B30;">❌</div>
-    <div class="stat-info">
-      <h3>أصول معطلة/مكهنة</h3>
-      <p class="stat-value" style="color: #FF3B30;">0</p>
+      <h3>القيمة الدفترية الصافية اليوم</h3>
+      <p class="stat-value" style="color: #AF52DE;">{{ getTotalNetBookValue() | currency:'EGP':'symbol':'1.0-0' }}</p>
     </div>
   </div>
 </div>
 
-<div class="glass-card">
-  <h3 style="margin-bottom: 20px;">سجل الأصول والعهد</h3>
-  <div class="table-container">
-    <table class="system-table">
-      <thead>
-        <tr>
-          <th>كود الأصل</th>
-          <th>اسم الأصل</th>
-          <th>التصنيف</th>
-          <th>قيمة الشراء</th>
-          <th>العهدة (مُسلم إلى)</th>
-          <th>حالة الأصل</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (asset of assets(); track asset.code) {
-          <tr>
-            <td style="font-family: monospace; color: var(--text-muted);">{{ asset.code }}</td>
-            <td style="font-weight: bold; color: var(--text-color);">{{ asset.name }}</td>
-            <td>{{ asset.category }}</td>
-            <td>{{ asset.purchaseValue }} ج.م</td>
-            <td>{{ asset.assignedTo }}</td>
-            <td>
-              @if (asset.status === 'good') {
-                <span class="status-badge done" style="background: rgba(52,199,89,0.1); border: 1px solid rgba(52,199,89,0.2);">بحالة جيدة</span>
-              } @else if (asset.status === 'maintenance') {
-                <span class="status-badge todo" style="background: rgba(255,149,0,0.1); color: #FF9500; border: 1px solid rgba(255,149,0,0.2);">في الصيانة</span>
-              } @else {
-                <span class="status-badge" style="background: rgba(255,59,48,0.1); color: #FF3B30; border: 1px solid rgba(255,59,48,0.2);">معطل</span>
-              }
-            </td>
-          </tr>
-        } @empty {
-          <tr>
-            <td colspan="6" style="text-align: center; padding: 20px;">لا توجد أصول مسجلة.</td>
-          </tr>
-        }
-      </tbody>
-    </table>
+<!-- Odoo-like Control Panel -->
+<div class="control-panel glass-card">
+  <div class="search-box">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+    </svg>
+    <input type="text" placeholder="بحث باسم الأصل، الكود، العهدة، أو التصنيف..."
+           [ngModel]="searchTerm()" (ngModelChange)="searchTerm.set($event)">
+  </div>
+  
+  <div class="view-toggles">
+    <button class="view-btn" [class.active]="viewMode() === 'kanban'" (click)="toggleViewMode('kanban')" title="عرض كانبان (Kanban)">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+      </svg>
+    </button>
+    <button class="view-btn" [class.active]="viewMode() === 'list'" (click)="toggleViewMode('list')" title="عرض قائمة (List)">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
   </div>
 </div>
+
+@if (showForm()) {
+  <div class="form-card" style="margin-bottom: 25px;">
+    <h3>إضافة أصل جديد وتقييمه محاسبياً</h3>
+    <form [formGroup]="assetForm" (ngSubmit)="onSubmit()" class="system-form">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <div class="form-group">
+          <label>اسم الأصل</label>
+          <input type="text" formControlName="name" placeholder="مثال: طابعة HP">
+        </div>
+        <div class="form-group">
+          <label>التصنيف</label>
+          <select formControlName="category">
+            <option value="أجهزة كمبيوتر">أجهزة كمبيوتر</option>
+            <option value="أجهزة مكتبية">أجهزة مكتبية</option>
+            <option value="معدات هندسية">معدات هندسية</option>
+            <option value="سيارات">سيارات</option>
+            <option value="أثاث ومفروشات">أثاث ومفروشات</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>تاريخ الشراء (لبدء حساب الإهلاك)</label>
+          <input type="date" formControlName="purchaseDate">
+        </div>
+        <div class="form-group">
+          <label>القيمة الشرائية (التاريخية ج.م)</label>
+          <input type="number" formControlName="purchaseValue" placeholder="0">
+        </div>
+        <div class="form-group">
+          <label>العمر الإنتاجي (بالسنوات)</label>
+          <input type="number" formControlName="usefulLifeYears" placeholder="مثال: 5 سنوات">
+        </div>
+        <div class="form-group">
+          <label>العهدة (مُسلم إلى)</label>
+          <input type="text" formControlName="assignedTo" placeholder="اسم الموظف أو القسم">
+        </div>
+        <div class="form-group">
+          <label>حالة الأصل الحالية</label>
+          <select formControlName="status">
+            <option value="good">بحالة جيدة</option>
+            <option value="maintenance">في الصيانة</option>
+            <option value="broken">معطل / مكهن</option>
+          </select>
+        </div>
+      </div>
+      <button type="submit" class="btn" [disabled]="!assetForm.valid" style="margin-top: 15px;">حفظ الأصل</button>
+    </form>
+  </div>
+}
+
+@if (viewMode() === 'kanban') {
+  <div class="kanban-grid">
+    @for (asset of filteredAssets(); track asset.id) {
+      <div class="glass-card kanban-card">
+        <div class="kanban-header">
+          <span class="asset-code">{{ asset.id }}</span>
+          @if (asset.status === 'good') {
+            <span class="status-dot good" title="جيد"></span>
+          } @else if (asset.status === 'maintenance') {
+            <span class="status-dot maintenance" title="في الصيانة"></span>
+          } @else {
+            <span class="status-dot broken" title="معطل"></span>
+          }
+        </div>
+        <h4 class="asset-name">{{ asset.name }}</h4>
+        <div class="asset-category">{{ asset.category }} • {{ asset.assignedTo }}</div>
+        
+        <div class="financial-details">
+          <div class="fin-row">
+            <span>القيمة الشرائية:</span>
+            <strong>{{ asset.purchaseValue | currency:'EGP':'symbol':'1.0-0' }}</strong>
+          </div>
+          <div class="fin-row">
+            <span>تاريخ الشراء:</span>
+            <strong>{{ asset.purchaseDate | date:'yyyy-MM-dd' }}</strong>
+          </div>
+          <div class="fin-row">
+            <span>القيمة الدفترية:</span>
+            <strong style="color: #AF52DE;">{{ getNetBookValue(asset) | currency:'EGP':'symbol':'1.0-0' }}</strong>
+          </div>
+          
+          <div class="depreciation-bar-container">
+            <div class="dep-labels">
+              <span>نسبة الإهلاك ({{ asset.usefulLifeYears }} سنوات)</span>
+              <span>{{ getDepreciationPercentage(asset) }}%</span>
+            </div>
+            <div class="progress-bg">
+              <div class="progress-fill" [style.width.%]="getDepreciationPercentage(asset)"
+                   [class.critical]="getDepreciationPercentage(asset) > 85"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    } @empty {
+      <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-muted);">
+        لا توجد أصول مطابقة للبحث.
+      </div>
+    }
+  </div>
+} @else {
+  <div class="glass-card">
+    <div class="table-container">
+      <table class="system-table">
+        <thead>
+          <tr>
+            <th>الكود</th>
+            <th>اسم الأصل والتصنيف</th>
+            <th>العهدة</th>
+            <th>تاريخ الشراء</th>
+            <th>القيمة الشرائية</th>
+            <th>مجمع الإهلاك</th>
+            <th>القيمة الدفترية</th>
+            <th>الحالة</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (asset of filteredAssets(); track asset.id) {
+            <tr>
+              <td style="font-family: monospace; color: var(--text-muted);">{{ asset.id }}</td>
+              <td>
+                <div style="font-weight: bold;">{{ asset.name }}</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">{{ asset.category }}</div>
+              </td>
+              <td>{{ asset.assignedTo }}</td>
+              <td>{{ asset.purchaseDate | date:'yyyy-MM-dd' }}</td>
+              <td>{{ asset.purchaseValue | currency:'EGP':'symbol':'1.0-0' }}</td>
+              <td style="color: #FF3B30;">-{{ getAccumulatedDepreciation(asset) | currency:'EGP':'symbol':'1.0-0' }}</td>
+              <td style="font-weight: bold; color: #AF52DE;">{{ getNetBookValue(asset) | currency:'EGP':'symbol':'1.0-0' }}</td>
+              <td>
+                @if (asset.status === 'good') {
+                  <span class="status-badge done">جيد</span>
+                } @else if (asset.status === 'maintenance') {
+                  <span class="status-badge todo">صيانة</span>
+                } @else {
+                  <span class="status-badge" style="background: rgba(255,59,48,0.1); color: #FF3B30;">معطل</span>
+                }
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="8" style="text-align: center; padding: 20px;">لا توجد أصول مطابقة للبحث.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+}
