@@ -26,8 +26,8 @@ export class DataService {
 
   // Firestore Collections mapped to Signals
   clients: Signal<Client[]> = toSignal(collectionData(collection(this.firestore, 'clients'), { idField: 'id' }), { initialValue: [
-    { id: '1', name: 'أحمد محمود', phone: '01001234567', email: 'ahmed@example.com', dateAdded: '1 أغسطس 2026' },
-    { id: '2', name: 'شركة الأفق', phone: '01119876543', email: 'info@alofoq.com', dateAdded: '15 يوليو 2026' }
+    { id: '1', name: 'أحمد محمود', branchName: 'الفرع الرئيسي', phone: '01001234567', email: 'ahmed@example.com', dateAdded: '1 أغسطس 2026' },
+    { id: '2', name: 'شركة الأفق', branchName: 'فرع الإسكندرية', phone: '01119876543', email: 'info@alofoq.com', dateAdded: '15 يوليو 2026' }
   ] }) as any;
 
   projects: Signal<Project[]> = toSignal(collectionData(collection(this.firestore, 'projects'), { idField: 'id' }), { initialValue: [
@@ -36,8 +36,8 @@ export class DataService {
   ] }) as any;
 
   contracts: Signal<Contract[]> = toSignal(collectionData(collection(this.firestore, 'contracts'), { idField: 'id' }), { initialValue: [
-    { id: 'CTR-1025', clientId: '1', clientName: 'أحمد محمود', date: '12 أغسطس 2026', value: 25000000, paid: 12000000, status: 'signed' },
-    { id: 'CTR-1026', clientId: '2', clientName: 'شركة الأفق', date: '1 يوليو 2026', value: 8500000, paid: 4000000, status: 'signed' }
+    { id: 'CTR-1025', clientId: '1', clientName: 'أحمد محمود', branchName: 'الفرع الرئيسي', taxId: '123-456-789', poNumber: 'PO-2026-001', date: '12 أغسطس 2026', value: 25000000, paid: 12000000, status: 'signed' },
+    { id: 'CTR-1026', clientId: '2', clientName: 'شركة الأفق', branchName: 'فرع الإسكندرية', taxId: '987-654-321', poNumber: 'PO-2026-002', date: '1 يوليو 2026', value: 8500000, paid: 4000000, status: 'signed' }
   ] }) as any;
 
   tasks: Signal<Task[]> = toSignal(collectionData(collection(this.firestore, 'tasks'), { idField: 'id' }), { initialValue: [
@@ -90,12 +90,13 @@ export class DataService {
     this.logActivity(`تم إنشاء مشروع جديد: ${project.name}`, 'project');
   }
 
-  addContract(contract: Omit<Contract, 'id' | 'date' | 'clientName' | 'paid'>) {
+  addContract(contract: Omit<Contract, 'id' | 'date' | 'clientName' | 'branchName' | 'paid'>) {
     const clientsList = this.clients() as any[];
     const client = clientsList.find(c => c.id === contract.clientId);
     const newContract = {
       ...contract,
       clientName: client ? client.name : 'غير معروف',
+      branchName: client ? client.branchName : 'الفرع الرئيسي',
       paid: 0,
       date: new Date().toLocaleDateString('ar-EG')
     };

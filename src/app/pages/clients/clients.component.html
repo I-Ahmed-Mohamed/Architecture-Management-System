@@ -1,31 +1,43 @@
 <div class="page-header">
-  <h2 class="page-title">إدارة العملاء</h2>
+  <h2 class="page-title">إدارة العملاء والفروع</h2>
   <div class="page-actions">
-    <button class="btn" (click)="toggleForm()">
-      @if (showForm()) { إلغاء } @else { إضافة عميل جديد + }
+    <button class="btn glass-btn" (click)="toggleForm()">
+      <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+      </svg>
+      @if (showForm()) { إلغاء } @else { إضافة عميل جديد }
     </button>
   </div>
 </div>
 
 @if (showForm()) {
   <div class="form-card glass-card">
-    <h3>إضافة عميل جديد</h3>
-    <form [formGroup]="clientForm" (ngSubmit)="onSubmit()" class="system-form">
+    <h3 style="margin-bottom: 20px;">إضافة عميل جديد</h3>
+    <form [formGroup]="clientForm" (ngSubmit)="onSubmit()" class="system-form" style="grid-template-columns: 1fr 1fr;">
+      
       <div class="form-floating">
         <input type="text" formControlName="name" placeholder=" " id="clientName">
-        <label for="clientName">اسم العميل</label>
+        <label for="clientName">اسم العميل أو الشركة</label>
       </div>
+
+      <div class="form-floating">
+        <input type="text" formControlName="branchName" placeholder=" " id="branchName">
+        <label for="branchName">الفرع التابع له</label>
+      </div>
+
       <div class="form-floating">
         <input type="text" formControlName="phone" placeholder=" " id="clientPhone">
         <label for="clientPhone">رقم الهاتف</label>
       </div>
+
       <div class="form-floating">
         <input type="email" formControlName="email" placeholder=" " id="clientEmail">
         <label for="clientEmail">البريد الإلكتروني</label>
       </div>
-      <button type="submit" class="btn" [disabled]="!clientForm.valid">
+
+      <button type="submit" class="btn" [disabled]="!clientForm.valid" style="grid-column: 1 / -1; margin-top: 10px;">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-        حفظ العميل
+        حفظ بيانات العميل
       </button>
     </form>
   </div>
@@ -36,7 +48,7 @@
   <div class="filter-bar">
     <div class="filter-group">
       <svg class="icon text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-      <input type="text" class="filter-input" placeholder="بحث باسم العميل، الهاتف، أو الإيميل..." (input)="searchTerm.set($any($event.target).value)">
+      <input type="text" class="filter-input" placeholder="بحث باسم العميل، الفرع، الهاتف..." (input)="searchTerm.set($any($event.target).value)">
     </div>
     <div class="filter-group" style="flex: 0.5;">
       <input type="date" class="filter-input" title="من تاريخ" (change)="startDate.set($any($event.target).value)">
@@ -49,7 +61,8 @@
     <table class="system-table">
       <thead>
         <tr>
-          <th>اسم العميل</th>
+          <th>العميل / الشركة</th>
+          <th>الفرع</th>
           <th>رقم الهاتف</th>
           <th>البريد الإلكتروني</th>
           <th>تاريخ الإضافة</th>
@@ -59,15 +72,16 @@
       <tbody>
         @for (client of filteredClients(); track client.id) {
           <tr>
-            <td>{{ client.name }}</td>
+            <td style="font-weight: 600; color: var(--text-color);">{{ client.name }}</td>
+            <td class="text-accent">{{ client.branchName }}</td>
             <td>{{ client.phone }}</td>
             <td>{{ client.email }}</td>
-            <td>{{ client.dateAdded }}</td>
-            <td><button class="btn-outline" style="padding: 5px 10px; font-size: 0.8rem;">تعديل</button></td>
+            <td class="text-muted">{{ client.dateAdded }}</td>
+            <td><button class="btn-outline" style="padding: 5px 10px; font-size: 0.8rem; border-radius: 8px;">تعديل</button></td>
           </tr>
         } @empty {
           <tr>
-            <td colspan="5" style="text-align: center; padding: 20px;">لا يوجد عملاء حالياً.</td>
+            <td colspan="6" style="text-align: center; padding: 30px; color: var(--text-muted);">لا يوجد عملاء حالياً.</td>
           </tr>
         }
       </tbody>

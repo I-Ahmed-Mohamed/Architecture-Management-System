@@ -1,6 +1,7 @@
 export interface Client {
   id: string;
   name: string;
+  branchName: string;
   phone: string;
   email: string;
   dateAdded: string;
@@ -20,6 +21,9 @@ export interface Contract {
   id: string;
   clientId: string;
   clientName: string;
+  branchName: string;
+  taxId: string;
+  poNumber: string;
   date: string;
   value: number;
   paid: number;
