@@ -18,9 +18,6 @@ export class TopbarComponent implements OnInit {
 
   openMenu = output<void>();
 
-  searchTerm = signal('');
-  showResults = signal(false);
-  searchResults = signal<any[]>([]);
   showBackButton = signal(false);
 
   ngOnInit() {
@@ -39,23 +36,5 @@ export class TopbarComponent implements OnInit {
     this.openMenu.emit();
   }
 
-  onSearch(event: any) {
-    const term = event.target.value.toLowerCase();
-    this.searchTerm.set(term);
 
-    if (term.length > 1) {
-      const projects = this.dataService.projects().filter(p => p.name.toLowerCase().includes(term) || p.clientName.toLowerCase().includes(term)).map(p => ({ ...p, type: 'project', link: ['/projects', p.id] }));
-      const clients = this.dataService.clients().filter(c => c.name.toLowerCase().includes(term) || c.phone.includes(term)).map(c => ({ ...c, type: 'client', link: ['/clients'] }));
-
-      this.searchResults.set([...projects, ...clients]);
-      this.showResults.set(true);
-    } else {
-      this.searchResults.set([]);
-      this.showResults.set(false);
-    }
-  }
-
-  closeSearch() {
-    setTimeout(() => this.showResults.set(false), 200);
-  }
 }
