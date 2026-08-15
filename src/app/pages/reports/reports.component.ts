@@ -69,16 +69,8 @@ export class ReportsComponent {
       
       const pdf = new jsPDF('p', 'mm', 'a4');
       
-      // Add Company Header
-      pdf.setFontSize(22);
-      pdf.setTextColor(10, 132, 255);
-      pdf.text('Nest Designs', 105, 20, { align: 'center' });
-      pdf.setFontSize(14);
-      pdf.setTextColor(100);
-      pdf.text('التقرير المالي والإحصائي الشامل', 105, 30, { align: 'center' });
-      
       const imgData = canvas.toDataURL('image/png');
-      pdf.addImage(imgData, 'PNG', 0, 40, imgWidth, imgHeight);
+      pdf.addImage(imgData, 'PNG', 0, 10, imgWidth, imgHeight);
       
       pdf.save('Financial_Report.pdf');
     } catch (err) {

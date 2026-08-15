@@ -394,3 +394,78 @@ a {
   font-weight: 700;
   color: var(--text-color);
 }
+
+/* ===== Premium Button ===== */
+.btn-premium {
+  background: linear-gradient(135deg, #2b5876 0%, #4e4376 100%);
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 30px;
+  font-size: 1rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(43, 88, 118, 0.4);
+  transition: all 0.3s ease;
+}
+
+.btn-premium:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(43, 88, 118, 0.6);
+  opacity: 0.95;
+}
+
+/* ===== Side Panel ===== */
+.side-panel-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  justify-content: flex-end; /* Panel comes from the right in RTL, so flex-start for LTR, wait we are RTL so flex-start means right side? No, standard flex-start is left. If dir=rtl, flex-start is right. */
+}
+
+[dir="rtl"] .side-panel-overlay {
+  justify-content: flex-start;
+}
+
+.side-panel {
+  background: var(--bg-light);
+  width: 450px;
+  max-width: 100%;
+  height: 100%;
+  padding: 30px;
+  box-shadow: -5px 0 25px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+  animation: slideInSide 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes slideInSide {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.side-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.side-panel-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--text-color);
+  margin: 0;
+}

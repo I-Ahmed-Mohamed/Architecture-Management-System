@@ -10,7 +10,6 @@ import { HrComponent } from './pages/hr/hr.component';
 import { TreasuryComponent } from './pages/treasury/treasury.component';
 import { AssetsComponent } from './pages/assets/assets.component';
 import { ReportsComponent } from './pages/reports/reports.component';
-import { AiAssistantComponent } from './pages/ai-assistant/ai-assistant.component';
 import { SettingsComponent } from './pages/settings/settings.component';
 
 export const routes: Routes = [
@@ -26,7 +25,6 @@ export const routes: Routes = [
   { path: 'treasury', component: TreasuryComponent },
   { path: 'assets', component: AssetsComponent },
   { path: 'reports', component: ReportsComponent },
-  { path: 'ai-assistant', component: AiAssistantComponent },
   { path: 'settings', component: SettingsComponent },
   { path: '**', redirectTo: 'dashboard' }
 ];
