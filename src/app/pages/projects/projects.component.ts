@@ -20,7 +20,9 @@ export class ProjectsComponent {
     name: ['', Validators.required],
     clientId: ['', Validators.required],
     phase: ['', Validators.required],
-    status: ['active', Validators.required]
+    status: ['active', Validators.required],
+    projectStatus: ['مرحلة التصميم'],
+    progress: [0, [Validators.min(0), Validators.max(100)]]
   });
 
   toggleForm() {
@@ -33,9 +35,11 @@ export class ProjectsComponent {
         name: this.projectForm.value.name!,
         clientId: this.projectForm.value.clientId!,
         phase: this.projectForm.value.phase!,
-        status: this.projectForm.value.status as any
+        status: this.projectForm.value.status as any,
+        projectStatus: this.projectForm.value.projectStatus || 'مرحلة التصميم',
+        progress: this.projectForm.value.progress || 0
       });
-      this.projectForm.reset({ status: 'active' });
+      this.projectForm.reset({ status: 'active', projectStatus: 'مرحلة التصميم', progress: 0 });
       this.showForm.set(false);
     }
   }

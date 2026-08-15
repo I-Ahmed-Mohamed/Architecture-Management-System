@@ -2,7 +2,7 @@ import { Injectable, signal, computed, inject, Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Firestore, collection, collectionData, doc, addDoc, updateDoc, deleteDoc, setDoc } from '@angular/fire/firestore';
 import { catchError, EMPTY } from 'rxjs';
-import { Client, Project, Contract } from '../models';
+import { Client, Project, Contract, Supplier, SupplierTransaction } from '../models';
 
 export interface Task {
   id: string;
@@ -32,8 +32,8 @@ export class DataService {
   ] }) as any;
 
   projects: Signal<Project[]> = toSignal(collectionData(collection(this.firestore, 'projects'), { idField: 'id' }).pipe(catchError(() => EMPTY)), { initialValue: [
-    { id: '101', clientId: '1', clientName: 'أحمد محمود', name: 'فيلا سكنية - التجمع الخامس', phase: 'التصميم المعماري 2D', startDate: '10 أغسطس 2026', status: 'active' },
-    { id: '102', clientId: '2', clientName: 'شركة الأفق', name: 'مقر إداري - العاصمة الجديدة', phase: 'الإشراف على التشطيب', startDate: '1 يوليو 2026', status: 'active' }
+    { id: '101', clientId: '1', clientName: 'أحمد محمود', name: 'فيلا سكنية - التجمع الخامس', phase: 'التصميم المعماري 2D', startDate: '10 أغسطس 2026', status: 'active', projectStatus: 'مرحلة التصميم', progress: 15 },
+    { id: '102', clientId: '2', clientName: 'شركة الأفق', name: 'مقر إداري - العاصمة الجديدة', phase: 'الإشراف على التشطيب', startDate: '1 يوليو 2026', status: 'active', projectStatus: 'مرحلة التشطيبات', progress: 75 }
   ] }) as any;
 
   contracts: Signal<Contract[]> = toSignal(collectionData(collection(this.firestore, 'contracts'), { idField: 'id' }).pipe(catchError(() => EMPTY)), { initialValue: [
@@ -51,6 +51,16 @@ export class DataService {
   activities: Signal<Activity[]> = toSignal(collectionData(collection(this.firestore, 'activities'), { idField: 'id' }).pipe(catchError(() => EMPTY)), { initialValue: [
     { id: '1', title: 'تم توقيع عقد جديد مع أحمد محمود', date: new Date('2026-08-12T10:30:00'), type: 'contract' },
     { id: '2', title: 'تم البدء في مشروع فيلا سكنية - التجمع الخامس', date: new Date('2026-08-10T09:00:00'), type: 'project' }
+  ] }) as any;
+
+  suppliers: Signal<Supplier[]> = toSignal(collectionData(collection(this.firestore, 'suppliers'), { idField: 'id' }).pipe(catchError(() => EMPTY)), { initialValue: [
+    { id: '1', name: 'شركة السويس للأسمنت', category: 'مورد خامات', specialty: 'أسمنت ومواد بناء', phone: '0100000001', dateAdded: '1 أغسطس 2026' },
+    { id: '2', name: 'أحمد السباك', category: 'مقاول باطن', specialty: 'أعمال السباكة', phone: '0122222222', dateAdded: '5 أغسطس 2026' }
+  ] }) as any;
+
+  supplierTransactions: Signal<SupplierTransaction[]> = toSignal(collectionData(collection(this.firestore, 'supplier_transactions'), { idField: 'id' }).pipe(catchError(() => EMPTY)), { initialValue: [
+    { id: 'TX-1', supplierId: '1', date: '10 أغسطس 2026', type: 'invoice', amount: 45000, description: 'توريد 20 طن أسمنت لفيلا التجمع' },
+    { id: 'TX-2', supplierId: '1', date: '12 أغسطس 2026', type: 'payment', amount: 20000, description: 'دفعة نقدية من الحساب' }
   ] }) as any;
 
   // Computed values for dashboard
@@ -76,13 +86,15 @@ export class DataService {
       projects: this.projects(),
       contracts: this.contracts(),
       tasks: this.tasks(),
-      activities: this.activities()
+      activities: this.activities(),
+      suppliers: this.suppliers(),
+      supplierTransactions: this.supplierTransactions()
     };
     return (new Blob([JSON.stringify(data)]).size / 1024).toFixed(1);
   }
 
   get totalRecords() {
-    return this.clients().length + this.projects().length + this.contracts().length + this.tasks().length + this.activities().length;
+    return this.clients().length + this.projects().length + this.contracts().length + this.tasks().length + this.activities().length + this.suppliers().length + this.supplierTransactions().length;
   }
 
   loadAutoBackups() {
@@ -105,7 +117,9 @@ export class DataService {
       projects: this.projects(),
       contracts: this.contracts(),
       tasks: this.tasks(),
-      activities: this.activities()
+      activities: this.activities(),
+      suppliers: this.suppliers(),
+      supplierTransactions: this.supplierTransactions()
     };
     const json = JSON.stringify(data);
     const sizeKB = (new Blob([json]).size / 1024).toFixed(1);
@@ -174,6 +188,23 @@ export class DataService {
     this.logActivity(`تم تغيير حالة المهمة إلى ${newStatus === 'done' ? 'مكتملة' : 'جاري العمل'}`, 'task');
   }
 
+  addSupplier(supplier: Omit<Supplier, 'id' | 'dateAdded'>) {
+    const newSupplier = {
+      ...supplier,
+      dateAdded: new Date().toLocaleDateString('ar-EG')
+    };
+    addDoc(collection(this.firestore, 'suppliers'), newSupplier);
+    this.logActivity(`تم إضافة ${supplier.category} جديد: ${supplier.name}`, 'general');
+  }
+
+  addSupplierTransaction(tx: Omit<SupplierTransaction, 'id' | 'date'>) {
+    const newTx = {
+      ...tx,
+      date: new Date().toLocaleDateString('ar-EG')
+    };
+    addDoc(collection(this.firestore, 'supplier_transactions'), newTx);
+  }
+
   deleteAllData() {
     alert('خاصية الحذف معطلة حاليا لحماية قاعدة البيانات السحابية');
   }
@@ -184,7 +215,9 @@ export class DataService {
       projects: this.projects(),
       contracts: this.contracts(),
       tasks: this.tasks(),
-      activities: this.activities()
+      activities: this.activities(),
+      suppliers: this.suppliers(),
+      supplierTransactions: this.supplierTransactions()
     };
     const json = JSON.stringify(data, null, 2);
     const blob = new Blob([json], { type: 'application/json' });
@@ -229,6 +262,16 @@ export class DataService {
       if (data.activities) {
         for (const item of data.activities) {
           if (item.id) await setDoc(doc(this.firestore, 'activities', item.id), item);
+        }
+      }
+      if (data.suppliers) {
+        for (const item of data.suppliers) {
+          if (item.id) await setDoc(doc(this.firestore, 'suppliers', item.id), item);
+        }
+      }
+      if (data.supplierTransactions) {
+        for (const item of data.supplierTransactions) {
+          if (item.id) await setDoc(doc(this.firestore, 'supplier_transactions', item.id), item);
         }
       }
 

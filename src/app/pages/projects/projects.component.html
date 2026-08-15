@@ -55,12 +55,28 @@
         </div>
 
         <div class="form-floating">
-          <select formControlName="status" id="projectStatus" class="form-select">
+          <select formControlName="projectStatus" id="projectStatus" class="form-select">
+            <option value="مرحلة التصميم">مرحلة التصميم (Design)</option>
+            <option value="استخراج التراخيص">استخراج التراخيص (Permits)</option>
+            <option value="مرحلة الإنشاءات">مرحلة الإنشاءات (Construction)</option>
+            <option value="مرحلة التشطيبات">مرحلة التشطيبات (Finishing)</option>
+            <option value="تم التسليم">تم التسليم (Delivered)</option>
+          </select>
+          <label for="projectStatus">حالة المشروع المعمارية</label>
+        </div>
+
+        <div class="form-floating">
+          <input type="number" formControlName="progress" placeholder=" " id="projectProgress" min="0" max="100">
+          <label for="projectProgress">نسبة الإنجاز (%)</label>
+        </div>
+
+        <div class="form-floating">
+          <select formControlName="status" id="projectState" class="form-select">
             <option value="active">جاري العمل</option>
             <option value="pending">بانتظار موافقة العميل</option>
             <option value="completed">مكتمل</option>
           </select>
-          <label for="projectStatus">حالة المشروع</label>
+          <label for="projectState">حالة العمل</label>
         </div>
 
         <div style="margin-top: auto; padding-top: 20px;">
@@ -80,9 +96,10 @@
         <tr>
           <th>اسم المشروع</th>
           <th>العميل</th>
-          <th>المرحلة الحالية</th>
+          <th>المرحلة المعمارية</th>
+          <th>نسبة الإنجاز</th>
           <th>تاريخ البدء</th>
-          <th>الحالة</th>
+          <th>حالة العمل</th>
           <th>إجراءات</th>
         </tr>
       </thead>
@@ -91,8 +108,20 @@
           <tr>
             <td>{{ project.name }}</td>
             <td>{{ project.clientName }}</td>
-            <td>{{ project.phase }}</td>
-            <td>{{ project.startDate }}</td>
+            <td>
+              <span style="background: rgba(10, 132, 255, 0.1); color: #0A84FF; padding: 4px 10px; border-radius: 20px; font-size: 0.85rem; font-weight: 500;">
+                {{ project.projectStatus || 'غير محدد' }}
+              </span>
+            </td>
+            <td style="width: 250px;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="flex: 1; height: 8px; background: #E5E5EA; border-radius: 4px; overflow: hidden;">
+                  <div [style.width.%]="project.progress || 0" style="height: 100%; background: var(--accent-gradient); border-radius: 4px; transition: width 0.3s ease;"></div>
+                </div>
+                <span style="font-size: 0.85rem; font-weight: bold; color: var(--text-color); width: 35px;">{{ project.progress || 0 }}%</span>
+              </div>
+            </td>
+            <td class="text-muted" style="font-size: 0.9rem;">{{ project.startDate }}</td>
             <td>
               <span class="status" [class]="project.status">
                 {{ project.status === 'active' ? 'جاري العمل' : (project.status === 'pending' ? 'بانتظار موافقة العميل' : 'مكتمل') }}

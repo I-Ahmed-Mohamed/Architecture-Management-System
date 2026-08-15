@@ -11,6 +11,7 @@ import { TreasuryComponent } from './pages/treasury/treasury.component';
 import { AssetsComponent } from './pages/assets/assets.component';
 import { ReportsComponent } from './pages/reports/reports.component';
 import { SettingsComponent } from './pages/settings/settings.component';
+import { SuppliersComponent } from './pages/suppliers/suppliers.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -24,6 +25,7 @@ export const routes: Routes = [
   { path: 'hr', component: HrComponent },
   { path: 'treasury', component: TreasuryComponent },
   { path: 'assets', component: AssetsComponent },
+  { path: 'suppliers', component: SuppliersComponent },
   { path: 'reports', component: ReportsComponent },
   { path: 'settings', component: SettingsComponent },
   { path: '**', redirectTo: 'dashboard' }

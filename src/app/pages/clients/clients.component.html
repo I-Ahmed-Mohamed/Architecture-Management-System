@@ -149,7 +149,13 @@
     <div class="modal-content" style="background: var(--bg-light); border-radius: var(--border-radius-lg); padding: 0; overflow: hidden; max-width: 700px;" (click)="$event.stopPropagation()">
       <div class="modal-header" style="padding: 20px; margin: 0; border-bottom: 1px solid var(--border-color);">
         <h3 style="margin: 0;">كشف حساب: {{ selectedClient()?.name }}</h3>
-        <button class="close-btn" (click)="closeStatement()">×</button>
+        <div style="display: flex; gap: 15px; align-items: center;">
+          <button class="btn" style="background: #000; color: #fff; padding: 6px 14px; font-size: 0.9rem;" (click)="exportStatementPDF()">
+            <svg style="width: 16px; height: 16px; margin-left: 5px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+            طباعة
+          </button>
+          <button class="close-btn" (click)="closeStatement()">×</button>
+        </div>
       </div>
       
       <div class="modal-body" style="padding: 20px; background: #ffffff;">
