@@ -17,6 +17,7 @@ export class TopbarComponent implements OnInit {
   router = inject(Router);
 
   openMenu = output<void>();
+  isLightMode = signal(false);
 
   showBackButton = signal(false);
 
@@ -26,6 +27,25 @@ export class TopbarComponent implements OnInit {
     ).subscribe((event: any) => {
       this.showBackButton.set(event.urlAfterRedirects !== '/dashboard');
     });
+
+    if (typeof localStorage !== 'undefined') {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'light') {
+        this.isLightMode.set(true);
+        document.body.classList.add('light-theme');
+      }
+    }
+  }
+
+  toggleTheme() {
+    this.isLightMode.update(v => !v);
+    if (this.isLightMode()) {
+      document.body.classList.add('light-theme');
+      localStorage.setItem('theme', 'light');
+    } else {
+      document.body.classList.remove('light-theme');
+      localStorage.setItem('theme', 'dark');
+    }
   }
 
   goBack() {

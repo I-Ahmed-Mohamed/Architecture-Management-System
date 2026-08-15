@@ -20,6 +20,20 @@
   --border-radius-md: 14px;
 }
 
+body.light-theme {
+  --primary-color: #ffffff;
+  --secondary-color: #f2f2f7;
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --text-color: #1c1c1e;
+  --text-muted: rgba(60, 60, 67, 0.6);
+  --bg-color: #f2f2f7;
+  --bg-light: #ffffff;
+  --sidebar-bg: #ffffff;
+  --border-color: rgba(0, 0, 0, 0.1);
+  --border-highlight: rgba(0, 0, 0, 0.15);
+  --glass-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+}
+
 * {
   margin: 0;
   padding: 0;
