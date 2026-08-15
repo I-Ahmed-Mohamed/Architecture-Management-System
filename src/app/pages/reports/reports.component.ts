@@ -3,6 +3,9 @@ import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartOptions } from 'chart.js';
 import { DataService } from '../../services/data.service';
 import { CurrencyPipe } from '@angular/common';
+import * as XLSX from 'xlsx';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 @Component({
   selector: 'app-reports',
@@ -49,11 +52,54 @@ export class ReportsComponent {
     }]
   };
 
-  exportPDF() {
-    alert('جاري تجهيز وتصدير التقرير بصيغة PDF...');
+  async exportPDF() {
+    const data = document.getElementById('printableReport');
+    if (!data) return;
+
+    try {
+      const canvas = await html2canvas(data, {
+        scale: 2, // Higher quality
+        useCORS: true,
+        backgroundColor: document.body.classList.contains('light-theme') ? '#f2f2f7' : '#000000'
+      });
+
+      const imgWidth = 210; // A4 size in mm
+      const pageHeight = 297;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      
+      // Add Company Header
+      pdf.setFontSize(22);
+      pdf.setTextColor(10, 132, 255);
+      pdf.text('Nest Designs', 105, 20, { align: 'center' });
+      pdf.setFontSize(14);
+      pdf.setTextColor(100);
+      pdf.text('التقرير المالي والإحصائي الشامل', 105, 30, { align: 'center' });
+      
+      const imgData = canvas.toDataURL('image/png');
+      pdf.addImage(imgData, 'PNG', 0, 40, imgWidth, imgHeight);
+      
+      pdf.save('Financial_Report.pdf');
+    } catch (err) {
+      console.error('Error generating PDF:', err);
+      alert('حدث خطأ أثناء تصدير ملف الـ PDF.');
+    }
   }
 
   exportExcel() {
-    alert('جاري تصدير التقرير بصيغة Excel...');
+    // Generate data array for Excel
+    const data = [
+      ['الشهر', 'الإيرادات', 'المصروفات', 'الصافي', 'معدل النمو'],
+      ['أغسطس 2026', 150000, 27000, 123000, '15%'],
+      ['يوليو 2026', 56000, 86000, -30000, '-12%'],
+      ['يونيو 2026', 81000, 19000, 62000, '5%']
+    ];
+
+    const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(data);
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'التقرير المالي');
+
+    XLSX.writeFile(wb, 'Financial_Report.xlsx');
   }
 }
