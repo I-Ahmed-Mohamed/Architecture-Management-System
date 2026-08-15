@@ -116,7 +116,7 @@ export class SuppliersComponent {
               <p style="margin: 5px 0 0 0; color: #666; font-size: 12px;">تاريخ الإصدار: ${todayStr}</p>
             </div>
             <div style="text-align: left;">
-              <img src="assets/logo.jpg" alt="Logo" style="height: 50px; border-radius: 8px;">
+              <img src="${window.location.origin}/assets/logo.jpg" alt="Logo" style="height: 50px; border-radius: 8px;">
             </div>
           </div>
 
