@@ -46,20 +46,4 @@
   </div>
 </div>
 
-<!-- Recent Activity -->
-<div class="recent-activity">
-  <h3 class="section-title">آخر النشاطات</h3>
-  <div class="activity-list">
-    @for (activity of dataService.activities(); track activity.id) {
-      <div class="activity-item">
-        <div class="activity-dot" [class]="activity.type + '-dot'"></div>
-        <div class="activity-content">
-          <p class="activity-text">{{ activity.title }}</p>
-          <span class="activity-time">{{ activity.date | date:'shortTime' }} - {{ activity.date | date:'shortDate' }}</span>
-        </div>
-      </div>
-    } @empty {
-      <p class="empty-text">لا يوجد نشاطات مسجلة بعد.</p>
-    }
-  </div>
-</div>
+
