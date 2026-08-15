@@ -22,11 +22,6 @@ export class TreasuryComponent {
   showForm = signal<boolean>(false);
   formType = signal<'in' | 'out'>('in');
 
-  treasuryForm = new FormGroup({
-    amount: new FormControl('', Validators.required),
-    reason: new FormControl('', Validators.required),
-    handledBy: new FormControl('', Validators.required)
-  });
 
   toggleForm(type?: 'in' | 'out') {
     if (type) {
