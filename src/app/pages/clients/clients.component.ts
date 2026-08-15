@@ -1,11 +1,14 @@
 import { Component, inject, signal, computed } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CurrencyPipe } from '@angular/common';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 import { DataService } from '../../services/data.service';
 
 @Component({
   selector: 'app-clients',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, CurrencyPipe],
   templateUrl: './clients.component.html',
   styleUrl: './clients.component.css'
 })
@@ -17,6 +20,8 @@ export class ClientsComponent {
   searchTerm = signal('');
   startDate = signal('');
   endDate = signal('');
+  
+  selectedClient = signal<any>(null);
 
   filteredClients = computed(() => {
     const term = this.searchTerm().toLowerCase();
@@ -62,6 +67,48 @@ export class ClientsComponent {
       });
       this.clientForm.reset();
       this.showForm.set(false);
+    }
+  }
+
+  openStatement(client: any) {
+    this.selectedClient.set(client);
+  }
+
+  closeStatement() {
+    this.selectedClient.set(null);
+  }
+
+  async exportStatementPDF() {
+    const data = document.getElementById('printableStatement');
+    if (!data) return;
+
+    try {
+      const canvas = await html2canvas(data, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: document.body.classList.contains('light-theme') ? '#f2f2f7' : '#000000'
+      });
+
+      const imgWidth = 210;
+      const pageHeight = 297;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      
+      pdf.setFontSize(22);
+      pdf.setTextColor(10, 132, 255);
+      pdf.text('Nest Designs', 105, 20, { align: 'center' });
+      pdf.setFontSize(14);
+      pdf.setTextColor(100);
+      pdf.text(`كشف حساب: ${this.selectedClient()?.name}`, 105, 30, { align: 'center' });
+      
+      const imgData = canvas.toDataURL('image/png');
+      pdf.addImage(imgData, 'PNG', 0, 40, imgWidth, imgHeight);
+      
+      pdf.save(`Account_Statement_${this.selectedClient()?.name}.pdf`);
+    } catch (err) {
+      console.error('Error generating PDF:', err);
+      alert('حدث خطأ أثناء تصدير ملف الـ PDF.');
     }
   }
 }

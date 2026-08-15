@@ -77,7 +77,10 @@
             <td>{{ client.phone }}</td>
             <td>{{ client.email }}</td>
             <td class="text-muted">{{ client.dateAdded }}</td>
-            <td><button class="btn-outline" style="padding: 5px 10px; font-size: 0.8rem; border-radius: 8px;">تعديل</button></td>
+            <td>
+              <button class="btn-outline" style="padding: 5px 10px; font-size: 0.8rem; border-radius: 8px; margin-left: 5px;">تعديل</button>
+              <button class="btn" style="padding: 5px 10px; font-size: 0.8rem; border-radius: 8px; background: rgba(10, 132, 255, 0.1); color: #0A84FF; border: 1px solid rgba(10, 132, 255, 0.3);" (click)="openStatement(client)">كشف حساب</button>
+            </td>
           </tr>
         } @empty {
           <tr>
@@ -88,3 +91,65 @@
     </table>
   </div>
 </div>
+
+<!-- Account Statement Modal -->
+@if (selectedClient()) {
+  <div class="modal-overlay" (click)="closeStatement()">
+    <div class="modal-content glass-card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>كشف حساب: {{ selectedClient()?.name }}</h3>
+        <button class="close-btn" (click)="closeStatement()">×</button>
+      </div>
+      
+      <div class="modal-body" id="printableStatement">
+        <div class="statement-summary" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px;">
+          <div class="stat-pill" style="background: rgba(10, 132, 255, 0.1); padding: 15px; border-radius: 12px;">
+            <p style="color: var(--text-muted); font-size: 0.8rem;">إجمالي التعاقدات</p>
+            <h4 style="color: #0A84FF; font-size: 1.2rem;">{{ 150000 | currency:'EGP':'symbol':'1.0-0' }}</h4>
+          </div>
+          <div class="stat-pill" style="background: rgba(52, 199, 89, 0.1); padding: 15px; border-radius: 12px;">
+            <p style="color: var(--text-muted); font-size: 0.8rem;">إجمالي المسدد</p>
+            <h4 style="color: #34C759; font-size: 1.2rem;">{{ 90000 | currency:'EGP':'symbol':'1.0-0' }}</h4>
+          </div>
+          <div class="stat-pill" style="background: rgba(255, 59, 48, 0.1); padding: 15px; border-radius: 12px;">
+            <p style="color: var(--text-muted); font-size: 0.8rem;">الرصيد المتبقي</p>
+            <h4 style="color: #FF3B30; font-size: 1.2rem;">{{ 60000 | currency:'EGP':'symbol':'1.0-0' }}</h4>
+          </div>
+        </div>
+
+        <table class="system-table">
+          <thead>
+            <tr>
+              <th>التاريخ</th>
+              <th>البيان</th>
+              <th>المبلغ</th>
+              <th>النوع</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>2026-08-01</td>
+              <td>دفعة مقدمة - مشروع فيلا</td>
+              <td style="color: #34C759;">50,000 ج.م</td>
+              <td>سداد</td>
+            </tr>
+            <tr>
+              <td>2026-07-15</td>
+              <td>قيمة التعاقد - مشروع فيلا</td>
+              <td style="color: #FF3B30;">150,000 ج.م</td>
+              <td>تعاقد</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="modal-footer" style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px;">
+        <button class="btn-outline" (click)="closeStatement()">إغلاق</button>
+        <button class="btn" style="background: #FF3B30;" (click)="exportStatementPDF()">
+          <svg style="width: 18px; height: 18px; margin-left: 5px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+          طباعة PDF
+        </button>
+      </div>
+    </div>
+  </div>
+}
