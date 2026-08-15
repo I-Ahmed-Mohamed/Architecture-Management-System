@@ -1,6 +1,6 @@
 import { Component, inject, signal, computed } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CurrencyPipe } from '@angular/common';
+import { CurrencyPipe, DatePipe } from '@angular/common';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { DataService } from '../../services/data.service';
@@ -8,7 +8,7 @@ import { DataService } from '../../services/data.service';
 @Component({
   selector: 'app-clients',
   standalone: true,
-  imports: [ReactiveFormsModule, CurrencyPipe],
+  imports: [ReactiveFormsModule, CurrencyPipe, DatePipe],
   templateUrl: './clients.component.html',
   styleUrl: './clients.component.css'
 })
@@ -20,6 +20,7 @@ export class ClientsComponent {
   searchTerm = signal('');
   startDate = signal('');
   endDate = signal('');
+  today = new Date();
   
   selectedClient = signal<any>(null);
 
@@ -95,15 +96,8 @@ export class ClientsComponent {
       
       const pdf = new jsPDF('p', 'mm', 'a4');
       
-      pdf.setFontSize(22);
-      pdf.setTextColor(10, 132, 255);
-      pdf.text('Nest Designs', 105, 20, { align: 'center' });
-      pdf.setFontSize(14);
-      pdf.setTextColor(100);
-      pdf.text(`كشف حساب: ${this.selectedClient()?.name}`, 105, 30, { align: 'center' });
-      
       const imgData = canvas.toDataURL('image/png');
-      pdf.addImage(imgData, 'PNG', 0, 40, imgWidth, imgHeight);
+      pdf.addImage(imgData, 'PNG', 0, 10, imgWidth, imgHeight);
       
       pdf.save(`Account_Statement_${this.selectedClient()?.name}.pdf`);
     } catch (err) {
