@@ -54,6 +54,59 @@ export class TreasuryComponent {
 
   currentBalance = signal<number>(125000); // Dummy initial balance
 
+  activeTab = signal<'cash' | 'checks'>('cash');
+  showCheckForm = signal<boolean>(false);
+
+  checkForm = new FormGroup({
+    checkNumber: new FormControl('', Validators.required),
+    amount: new FormControl('', Validators.required),
+    dueDate: new FormControl('', Validators.required),
+    payee: new FormControl('', Validators.required),
+    type: new FormControl<'in' | 'out'>('in', Validators.required),
+    status: new FormControl<'pending' | 'cleared' | 'bounced'>('pending', Validators.required)
+  });
+
+  toggleCheckForm() {
+    this.showCheckForm.set(!this.showCheckForm());
+    if (!this.showCheckForm()) {
+      this.checkForm.reset({ type: 'in', status: 'pending' });
+    }
+  }
+
+  onCheckSubmit() {
+    if (this.checkForm.valid) {
+      const formVal = this.checkForm.value;
+      const newCheck = {
+        id: formVal.checkNumber as string,
+        amount: Number(formVal.amount),
+        dueDate: formVal.dueDate as string,
+        payee: formVal.payee as string,
+        type: formVal.type as 'in' | 'out',
+        status: formVal.status as 'pending' | 'cleared' | 'bounced'
+      };
+      this.checks.update(c => [newCheck, ...c]);
+      this.toggleCheckForm();
+    }
+  }
+
+  checks = signal<any[]>([
+    { id: 'CHK-100234', amount: 25000, dueDate: '2026-08-20', payee: 'شركة الأفق', type: 'in', status: 'pending' },
+    { id: 'CHK-998822', amount: 15000, dueDate: '2026-08-15', payee: 'مورد دهانات', type: 'out', status: 'cleared' },
+    { id: 'CHK-112233', amount: 50000, dueDate: '2026-08-30', payee: 'أحمد محمود', type: 'in', status: 'pending' }
+  ]);
+
+  getTotalPendingChecks() {
+    return this.checks().filter(c => c.status === 'pending').length;
+  }
+
+  getTotalChecksIn() {
+    return this.checks().filter(c => c.type === 'in' && c.status === 'cleared').reduce((sum, c) => sum + c.amount, 0);
+  }
+
+  getTotalChecksOut() {
+    return this.checks().filter(c => c.type === 'out' && c.status === 'cleared').reduce((sum, c) => sum + c.amount, 0);
+  }
+
   getTotalIn() {
     return this.movements().filter(m => m.type === 'in').reduce((sum, m) => sum + m.amount, 0);
   }

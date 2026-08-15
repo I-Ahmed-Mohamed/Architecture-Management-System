@@ -175,9 +175,9 @@
 
           <!-- Financial Summary -->
           <div style="display: flex; justify-content: space-between; margin-bottom: 20px; border: 1px solid #000; padding: 12px; font-weight: bold; font-size: 15px; background-color: #f9f9f9;">
-            <div style="text-align: center; flex: 1; border-left: 1px solid #ccc;">إجمالي التعاقدات<br><span style="font-size: 18px;">{{ 150000 | currency:'EGP':'symbol':'1.0-0' }}</span></div>
-            <div style="text-align: center; flex: 1; border-left: 1px solid #ccc;">إجمالي المسدد<br><span style="font-size: 18px;">{{ 90000 | currency:'EGP':'symbol':'1.0-0' }}</span></div>
-            <div style="text-align: center; flex: 1;">الرصيد المتبقي<br><span style="font-size: 18px;">{{ 60000 | currency:'EGP':'symbol':'1.0-0' }}</span></div>
+            <div style="text-align: center; flex: 1; border-left: 1px solid #ccc;">إجمالي التعاقدات<br><span style="font-size: 18px;">{{ clientTotalContracts() | currency:'EGP':'symbol':'1.0-0' }}</span></div>
+            <div style="text-align: center; flex: 1; border-left: 1px solid #ccc;">إجمالي المسدد<br><span style="font-size: 18px;">{{ clientTotalPaid() | currency:'EGP':'symbol':'1.0-0' }}</span></div>
+            <div style="text-align: center; flex: 1;">الرصيد المتبقي<br><span style="font-size: 18px;">{{ clientRemaining() | currency:'EGP':'symbol':'1.0-0' }}</span></div>
           </div>
 
           <!-- Detailed Table -->
@@ -192,18 +192,26 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td style="border: 1px solid #000; padding: 8px;">2026-08-01</td>
-                <td style="border: 1px solid #000; padding: 8px; text-align: right;">دفعة مقدمة - مشروع فيلا</td>
-                <td style="border: 1px solid #000; padding: 8px;">50,000 ج.م</td>
-                <td style="border: 1px solid #000; padding: 8px;">سداد</td>
-              </tr>
-              <tr>
-                <td style="border: 1px solid #000; padding: 8px;">2026-07-15</td>
-                <td style="border: 1px solid #000; padding: 8px; text-align: right;">قيمة التعاقد - مشروع فيلا</td>
-                <td style="border: 1px solid #000; padding: 8px;">150,000 ج.م</td>
-                <td style="border: 1px solid #000; padding: 8px;">تعاقد</td>
-              </tr>
+              @for (contract of clientContracts(); track contract.id) {
+                <tr>
+                  <td style="border: 1px solid #000; padding: 8px;">{{ contract.date }}</td>
+                  <td style="border: 1px solid #000; padding: 8px; text-align: right;">عقد رقم {{ contract.id }}</td>
+                  <td style="border: 1px solid #000; padding: 8px;">{{ contract.value | currency:'EGP':'symbol':'1.0-0' }}</td>
+                  <td style="border: 1px solid #000; padding: 8px;">تعاقد</td>
+                </tr>
+                @if (contract.paid > 0) {
+                  <tr>
+                    <td style="border: 1px solid #000; padding: 8px;">{{ contract.date }}</td>
+                    <td style="border: 1px solid #000; padding: 8px; text-align: right;">دفعة لعقد رقم {{ contract.id }}</td>
+                    <td style="border: 1px solid #000; padding: 8px;">{{ contract.paid | currency:'EGP':'symbol':'1.0-0' }}</td>
+                    <td style="border: 1px solid #000; padding: 8px;">سداد</td>
+                  </tr>
+                }
+              } @empty {
+                <tr>
+                  <td colspan="4" style="border: 1px solid #000; padding: 15px; text-align: center;">لا توجد تعاقدات مسجلة للعميل.</td>
+                </tr>
+              }
             </tbody>
           </table>
 

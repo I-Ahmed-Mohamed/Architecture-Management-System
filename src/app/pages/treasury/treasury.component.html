@@ -1,36 +1,169 @@
 <div class="page-header">
-  <h2 class="page-title">حركة الخزينة والسيولة النقدية</h2>
+  <h2 class="page-title">إدارة الخزينة والشيكات</h2>
   <div class="page-actions">
-    <button class="btn-premium" style="background: linear-gradient(135deg, #34C759, #28a745);" (click)="toggleForm('in')">وارد نقدية +</button>
-    <button class="btn-premium" style="background: linear-gradient(135deg, #FF3B30, #dc3545);" (click)="toggleForm('out')">منصرف نقدية -</button>
+    @if (activeTab() === 'cash') {
+      <button class="btn-premium" style="background: linear-gradient(135deg, #34C759, #28a745);" (click)="toggleForm('in')">وارد نقدية +</button>
+      <button class="btn-premium" style="background: linear-gradient(135deg, #FF3B30, #dc3545);" (click)="toggleForm('out')">منصرف نقدية -</button>
+    } @else {
+      <button class="btn-premium" style="background: linear-gradient(135deg, #0A84FF, #007aff);" (click)="toggleCheckForm()">تسجيل شيك جديد +</button>
+    }
   </div>
 </div>
 
-<div class="dashboard-grid" style="margin-bottom: 25px; grid-template-columns: repeat(3, 1fr);">
-  <div class="glass-card stat-card" style="border: 2px solid rgba(10, 132, 255, 0.3);">
-    <div class="stat-icon" style="background: rgba(10, 132, 255, 0.2); color: #0A84FF;">🏦</div>
-    <div class="stat-info">
-      <h3>رصيد الخزنة الحالي</h3>
-      <p class="stat-value" style="color: #0A84FF; font-size: 1.8rem;">{{ currentBalance() | currency:'EGP':'symbol':'1.0-0' }}</p>
-    </div>
-  </div>
-
-  <div class="glass-card stat-card">
-    <div class="stat-icon" style="background: rgba(52, 199, 89, 0.2); color: #34C759;">📥</div>
-    <div class="stat-info">
-      <h3>إجمالي الوارد اليوم</h3>
-      <p class="stat-value" style="color: #34C759;">{{ getTotalIn() | currency:'EGP':'symbol':'1.0-0' }}</p>
-    </div>
-  </div>
-
-  <div class="glass-card stat-card">
-    <div class="stat-icon" style="background: rgba(255, 59, 48, 0.2); color: #FF3B30;">📤</div>
-    <div class="stat-info">
-      <h3>إجمالي المنصرف اليوم</h3>
-      <p class="stat-value" style="color: #FF3B30;">{{ getTotalOut() | currency:'EGP':'symbol':'1.0-0' }}</p>
-    </div>
-  </div>
+<div style="display: flex; gap: 15px; margin-bottom: 25px;">
+  <button class="btn" [style.background]="activeTab() === 'cash' ? 'var(--accent-gradient)' : 'var(--bg-light)'" [style.color]="activeTab() === 'cash' ? 'white' : 'var(--text-color)'" [style.border]="activeTab() === 'cash' ? 'none' : '1px solid var(--border-color)'" style="padding: 12px 30px; font-weight: bold; font-size: 1.1rem;" (click)="activeTab.set('cash')">
+    حركة النقدية
+  </button>
+  <button class="btn" [style.background]="activeTab() === 'checks' ? 'var(--accent-gradient)' : 'var(--bg-light)'" [style.color]="activeTab() === 'checks' ? 'white' : 'var(--text-color)'" [style.border]="activeTab() === 'checks' ? 'none' : '1px solid var(--border-color)'" style="padding: 12px 30px; font-weight: bold; font-size: 1.1rem;" (click)="activeTab.set('checks')">
+    سجل الشيكات
+  </button>
 </div>
+
+@if (activeTab() === 'cash') {
+  <div class="dashboard-grid" style="margin-bottom: 25px; grid-template-columns: repeat(3, 1fr);">
+    <div class="glass-card stat-card" style="border: 2px solid rgba(10, 132, 255, 0.3);">
+      <div class="stat-icon" style="background: rgba(10, 132, 255, 0.2); color: #0A84FF;">🏦</div>
+      <div class="stat-info">
+        <h3>رصيد الخزنة الحالي</h3>
+        <p class="stat-value" style="color: #0A84FF; font-size: 1.8rem;">{{ currentBalance() | currency:'EGP':'symbol':'1.0-0' }}</p>
+      </div>
+    </div>
+
+    <div class="glass-card stat-card">
+      <div class="stat-icon" style="background: rgba(52, 199, 89, 0.2); color: #34C759;">📥</div>
+      <div class="stat-info">
+        <h3>إجمالي الوارد اليوم</h3>
+        <p class="stat-value" style="color: #34C759;">{{ getTotalIn() | currency:'EGP':'symbol':'1.0-0' }}</p>
+      </div>
+    </div>
+
+    <div class="glass-card stat-card">
+      <div class="stat-icon" style="background: rgba(255, 59, 48, 0.2); color: #FF3B30;">📤</div>
+      <div class="stat-info">
+        <h3>إجمالي المنصرف اليوم</h3>
+        <p class="stat-value" style="color: #FF3B30;">{{ getTotalOut() | currency:'EGP':'symbol':'1.0-0' }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="glass-card">
+    <h3 style="margin-bottom: 20px;">حركة الخزينة الأخيرة</h3>
+    <div class="table-container">
+      <table class="system-table">
+        <thead>
+          <tr>
+            <th>رقم الإيصال</th>
+            <th>تاريخ ووقت الحركة</th>
+            <th>نوع الحركة</th>
+            <th>المبلغ</th>
+            <th>البيان</th>
+            <th>المسؤول (العهدة)</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (mov of movements(); track mov.id) {
+            <tr>
+              <td style="font-family: monospace; color: var(--text-muted);">{{ mov.id }}</td>
+              <td>{{ mov.date | date:'dd/MM/yyyy hh:mm a' }}</td>
+              <td>
+                @if (mov.type === 'in') {
+                  <span class="status-badge done" style="background: rgba(52,199,89,0.1); border: 1px solid rgba(52,199,89,0.2);">إيداع / وارد</span>
+                } @else {
+                  <span class="status-badge" style="background: rgba(255,59,48,0.1); color: #FF3B30; border: 1px solid rgba(255,59,48,0.2);">صرف / صادر</span>
+                }
+              </td>
+              <td [style.color]="mov.type === 'in' ? '#34C759' : '#FF3B30'" style="font-weight: bold;">
+                {{ mov.type === 'in' ? '+' : '-' }} {{ mov.amount | currency:'EGP':'symbol':'1.0-0' }}
+              </td>
+              <td>{{ mov.reason }}</td>
+              <td>{{ mov.handledBy }}</td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6" style="text-align: center; padding: 20px;">لا توجد حركات مسجلة.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+} @else {
+  <div class="dashboard-grid" style="margin-bottom: 25px; grid-template-columns: repeat(3, 1fr);">
+    <div class="glass-card stat-card" style="border: 2px solid rgba(255, 149, 0, 0.3);">
+      <div class="stat-icon" style="background: rgba(255, 149, 0, 0.2); color: #FF9500;">⏳</div>
+      <div class="stat-info">
+        <h3>شيكات تحت التحصيل</h3>
+        <p class="stat-value" style="color: #FF9500; font-size: 1.8rem;">{{ getTotalPendingChecks() }}</p>
+      </div>
+    </div>
+
+    <div class="glass-card stat-card">
+      <div class="stat-icon" style="background: rgba(52, 199, 89, 0.2); color: #34C759;">💵</div>
+      <div class="stat-info">
+        <h3>شيكات واردة تم تحصيلها</h3>
+        <p class="stat-value" style="color: #34C759;">{{ getTotalChecksIn() | currency:'EGP':'symbol':'1.0-0' }}</p>
+      </div>
+    </div>
+
+    <div class="glass-card stat-card">
+      <div class="stat-icon" style="background: rgba(255, 59, 48, 0.2); color: #FF3B30;">💸</div>
+      <div class="stat-info">
+        <h3>شيكات صادرة تم صرفها</h3>
+        <p class="stat-value" style="color: #FF3B30;">{{ getTotalChecksOut() | currency:'EGP':'symbol':'1.0-0' }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="glass-card">
+    <h3 style="margin-bottom: 20px;">سجل الشيكات</h3>
+    <div class="table-container">
+      <table class="system-table">
+        <thead>
+          <tr>
+            <th>رقم الشيك</th>
+            <th>تاريخ الاستحقاق</th>
+            <th>النوع</th>
+            <th>المبلغ</th>
+            <th>الساحب / المستفيد</th>
+            <th>الحالة</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (chk of checks(); track chk.id) {
+            <tr>
+              <td style="font-family: monospace; font-weight: bold;">{{ chk.id }}</td>
+              <td>{{ chk.dueDate | date:'dd/MM/yyyy' }}</td>
+              <td>
+                @if (chk.type === 'in') {
+                  <span style="color: #34C759; font-weight: bold;">وارد</span>
+                } @else {
+                  <span style="color: #FF3B30; font-weight: bold;">صادر</span>
+                }
+              </td>
+              <td style="font-weight: bold;">
+                {{ chk.amount | currency:'EGP':'symbol':'1.0-0' }}
+              </td>
+              <td>{{ chk.payee }}</td>
+              <td>
+                @if (chk.status === 'pending') {
+                  <span class="status-badge" style="background: rgba(255, 149, 0, 0.1); color: #FF9500;">تحت التحصيل</span>
+                } @else if (chk.status === 'cleared') {
+                  <span class="status-badge" style="background: rgba(52, 199, 89, 0.1); color: #34C759;">تم التحصيل</span>
+                } @else {
+                  <span class="status-badge" style="background: rgba(255, 59, 48, 0.1); color: #FF3B30;">مرفوض</span>
+                }
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6" style="text-align: center; padding: 20px;">لا توجد شيكات مسجلة.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+}
 
 @if (showForm()) {
   <div class="side-panel-overlay" (click)="toggleForm()">
@@ -73,44 +206,63 @@
   </div>
 }
 
-<div class="glass-card">
-  <h3 style="margin-bottom: 20px;">حركة الخزينة الأخيرة</h3>
-  <div class="table-container">
-    <table class="system-table">
-      <thead>
-        <tr>
-          <th>رقم الإيصال</th>
-          <th>تاريخ ووقت الحركة</th>
-          <th>نوع الحركة</th>
-          <th>المبلغ</th>
-          <th>البيان</th>
-          <th>المسؤول (العهدة)</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (mov of movements(); track mov.id) {
-          <tr>
-            <td style="font-family: monospace; color: var(--text-muted);">{{ mov.id }}</td>
-            <td>{{ mov.date | date:'dd/MM/yyyy hh:mm a' }}</td>
-            <td>
-              @if (mov.type === 'in') {
-                <span class="status-badge done" style="background: rgba(52,199,89,0.1); border: 1px solid rgba(52,199,89,0.2);">إيداع / وارد</span>
-              } @else {
-                <span class="status-badge" style="background: rgba(255,59,48,0.1); color: #FF3B30; border: 1px solid rgba(255,59,48,0.2);">صرف / صادر</span>
-              }
-            </td>
-            <td [style.color]="mov.type === 'in' ? '#34C759' : '#FF3B30'" style="font-weight: bold;">
-              {{ mov.type === 'in' ? '+' : '-' }} {{ mov.amount | currency:'EGP':'symbol':'1.0-0' }}
-            </td>
-            <td>{{ mov.reason }}</td>
-            <td>{{ mov.handledBy }}</td>
-          </tr>
-        } @empty {
-          <tr>
-            <td colspan="6" style="text-align: center; padding: 20px;">لا توجد حركات مسجلة.</td>
-          </tr>
-        }
-      </tbody>
-    </table>
+@if (showCheckForm()) {
+  <div class="side-panel-overlay" (click)="toggleCheckForm()">
+    <div class="side-panel" (click)="$event.stopPropagation()">
+      <div class="side-panel-header">
+        <h3 class="side-panel-title">تسجيل شيك جديد</h3>
+        <button class="close-btn" (click)="toggleCheckForm()">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <form [formGroup]="checkForm" (ngSubmit)="onCheckSubmit()" class="system-form" style="display: flex; flex-direction: column; gap: 20px; flex: 1;">
+        
+        <div class="form-floating">
+          <input type="text" formControlName="checkNumber" placeholder=" " id="chkNum">
+          <label for="chkNum">رقم الشيك</label>
+        </div>
+
+        <div class="form-floating">
+          <input type="number" formControlName="amount" placeholder=" " id="chkAmount">
+          <label for="chkAmount">المبلغ (ج.م)</label>
+        </div>
+
+        <div class="form-floating">
+          <input type="date" formControlName="dueDate" id="chkDueDate">
+          <label for="chkDueDate">تاريخ الاستحقاق</label>
+        </div>
+
+        <div class="form-floating">
+          <input type="text" formControlName="payee" placeholder=" " id="chkPayee">
+          <label for="chkPayee">الساحب / المستفيد</label>
+        </div>
+
+        <div class="form-floating">
+          <select formControlName="type" id="chkType" class="form-select">
+            <option value="in">شيك وارد (لصالحنا)</option>
+            <option value="out">شيك صادر (علينا)</option>
+          </select>
+          <label for="chkType">نوع الشيك</label>
+        </div>
+
+        <div class="form-floating">
+          <select formControlName="status" id="chkStatus" class="form-select">
+            <option value="pending">تحت التحصيل</option>
+            <option value="cleared">تم التحصيل / الصرف</option>
+            <option value="bounced">مرفوض</option>
+          </select>
+          <label for="chkStatus">حالة الشيك</label>
+        </div>
+
+        <div style="margin-top: auto; padding-top: 20px;">
+          <button type="submit" class="btn" style="background: linear-gradient(135deg, #0A84FF, #007aff); width: 100%; height: 50px; font-size: 1.1rem; color: white; border: none;" [disabled]="!checkForm.valid">
+            حفظ الشيك
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
-</div>
+}

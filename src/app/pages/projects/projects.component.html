@@ -27,7 +27,7 @@
         </div>
         
         <div class="form-floating">
-          <select formControlName="clientId" id="projectClient" style="padding-top: 25px; padding-bottom: 5px; height: 55px;">
+          <select formControlName="clientId" id="projectClient" class="form-select">
             <option value="" disabled selected>اختر العميل</option>
             @for (client of dataService.clients(); track client.id) {
               <option [value]="client.id">{{ client.name }}</option>
@@ -37,7 +37,7 @@
         </div>
 
         <div class="form-floating">
-          <select formControlName="phase" id="projectPhase" style="padding-top: 25px; padding-bottom: 5px; height: 55px;">
+          <select formControlName="phase" id="projectPhase" class="form-select">
             <option value="معاينة ورفع مقاسات">معاينة ورفع مقاسات</option>
             <option value="التصميم المعماري 2D">التصميم المعماري 2D</option>
             <option value="مقترحات الثري دي (3D)">مقترحات الثري دي (3D)</option>
@@ -47,7 +47,7 @@
         </div>
 
         <div class="form-floating">
-          <select formControlName="status" id="projectStatus" style="padding-top: 25px; padding-bottom: 5px; height: 55px;">
+          <select formControlName="status" id="projectStatus" class="form-select">
             <option value="active">جاري العمل</option>
             <option value="pending">بانتظار موافقة العميل</option>
             <option value="completed">مكتمل</option>

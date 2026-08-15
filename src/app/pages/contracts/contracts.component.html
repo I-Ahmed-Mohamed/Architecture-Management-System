@@ -37,7 +37,7 @@
       <form [formGroup]="contractForm" (ngSubmit)="onSubmit()" class="system-form" style="display: flex; flex-direction: column; gap: 20px; flex: 1;">
         
         <div class="form-floating">
-          <select formControlName="clientId" id="clientId" style="padding-top: 25px; padding-bottom: 5px; height: 55px;">
+          <select formControlName="clientId" id="clientId" class="form-select">
             <option value="" disabled selected>اختر العميل</option>
             @for (client of dataService.clients(); track client.id) {
               <option [value]="client.id">{{ client.name }} ({{ client.branchName }})</option>
@@ -52,7 +52,7 @@
         </div>
 
         <div class="form-floating">
-          <select formControlName="status" id="status" style="padding-top: 25px; padding-bottom: 5px; height: 55px;">
+          <select formControlName="status" id="status" class="form-select">
             <option value="draft">قيد المراجعة</option>
             <option value="signed">مُعتمد (موقّع)</option>
           </select>

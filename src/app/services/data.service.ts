@@ -1,6 +1,6 @@
 import { Injectable, signal, computed, inject, Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Firestore, collection, collectionData, doc, addDoc, updateDoc, deleteDoc } from '@angular/fire/firestore';
+import { Firestore, collection, collectionData, doc, addDoc, updateDoc, deleteDoc, setDoc } from '@angular/fire/firestore';
 import { catchError, EMPTY } from 'rxjs';
 import { Client, Project, Contract } from '../models';
 
@@ -60,7 +60,71 @@ export class DataService {
   expectedRevenue = computed(() => this.contracts().reduce((sum, c) => sum + c.value, 0));
   collectedRevenue = computed(() => this.contracts().reduce((sum, c) => sum + c.paid, 0));
 
-  constructor() { }
+  // Backups and Settings State
+  autoBackups = signal<any[]>([]);
+  lastImport = signal<string | null>(localStorage.getItem('archfirm_last_import'));
+  lastExport = signal<string | null>(localStorage.getItem('archfirm_last_export'));
+
+  constructor() { 
+    this.loadAutoBackups();
+    this.initAutoBackup();
+  }
+
+  get totalDataSizeKB() {
+    const data = {
+      clients: this.clients(),
+      projects: this.projects(),
+      contracts: this.contracts(),
+      tasks: this.tasks(),
+      activities: this.activities()
+    };
+    return (new Blob([JSON.stringify(data)]).size / 1024).toFixed(1);
+  }
+
+  get totalRecords() {
+    return this.clients().length + this.projects().length + this.contracts().length + this.tasks().length + this.activities().length;
+  }
+
+  loadAutoBackups() {
+    const saved = localStorage.getItem('archfirm_auto_backups');
+    if (saved) {
+      this.autoBackups.set(JSON.parse(saved));
+    }
+  }
+
+  initAutoBackup() {
+    // Run every 1 hour (3600000 ms)
+    setInterval(() => {
+      this.createAutoBackup();
+    }, 3600000);
+  }
+
+  createAutoBackup() {
+    const data = {
+      clients: this.clients(),
+      projects: this.projects(),
+      contracts: this.contracts(),
+      tasks: this.tasks(),
+      activities: this.activities()
+    };
+    const json = JSON.stringify(data);
+    const sizeKB = (new Blob([json]).size / 1024).toFixed(1);
+    
+    const backup = {
+      id: new Date().getTime().toString(),
+      date: new Date().toISOString(),
+      size: sizeKB,
+      data: json
+    };
+    
+    let backups = [...this.autoBackups()];
+    backups.unshift(backup);
+    if (backups.length > 3) {
+      backups = backups.slice(0, 3);
+    }
+    this.autoBackups.set(backups);
+    localStorage.setItem('archfirm_auto_backups', JSON.stringify(backups));
+  }
 
   logActivity(title: string, type: Activity['type'] = 'general') {
     addDoc(collection(this.firestore, 'activities'), {
@@ -130,6 +194,52 @@ export class DataService {
     a.download = `archfirm_backup_${new Date().toISOString().split('T')[0]}.json`;
     a.click();
     window.URL.revokeObjectURL(url);
+    
+    const now = new Date().toISOString();
+    localStorage.setItem('archfirm_last_export', now);
+    this.lastExport.set(now);
+    
     this.logActivity('تم تحميل نسخة احتياطية من البيانات', 'general');
+  }
+
+  async importData(jsonString: string) {
+    try {
+      const data = JSON.parse(jsonString);
+      
+      if (data.clients) {
+        for (const item of data.clients) {
+          if (item.id) await setDoc(doc(this.firestore, 'clients', item.id), item);
+        }
+      }
+      if (data.projects) {
+        for (const item of data.projects) {
+          if (item.id) await setDoc(doc(this.firestore, 'projects', item.id), item);
+        }
+      }
+      if (data.contracts) {
+        for (const item of data.contracts) {
+          if (item.id) await setDoc(doc(this.firestore, 'contracts', item.id), item);
+        }
+      }
+      if (data.tasks) {
+        for (const item of data.tasks) {
+          if (item.id) await setDoc(doc(this.firestore, 'tasks', item.id), item);
+        }
+      }
+      if (data.activities) {
+        for (const item of data.activities) {
+          if (item.id) await setDoc(doc(this.firestore, 'activities', item.id), item);
+        }
+      }
+
+      this.logActivity('تم استيراد نسخة احتياطية بنجاح', 'general');
+      const now = new Date().toISOString();
+      localStorage.setItem('archfirm_last_import', now);
+      this.lastImport.set(now);
+      return true;
+    } catch (e) {
+      console.error('Error importing data:', e);
+      return false;
+    }
   }
 }

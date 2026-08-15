@@ -24,6 +24,24 @@ export class ClientsComponent {
   
   selectedClient = signal<any>(null);
 
+  clientContracts = computed(() => {
+    const client = this.selectedClient();
+    if (!client) return [];
+    return this.dataService.contracts().filter(c => c.clientId === client.id);
+  });
+
+  clientTotalContracts = computed(() => {
+    return this.clientContracts().reduce((sum, c) => sum + c.value, 0);
+  });
+
+  clientTotalPaid = computed(() => {
+    return this.clientContracts().reduce((sum, c) => sum + c.paid, 0);
+  });
+
+  clientRemaining = computed(() => {
+    return this.clientTotalContracts() - this.clientTotalPaid();
+  });
+
   filteredClients = computed(() => {
     const term = this.searchTerm().toLowerCase();
     const start = this.startDate() ? new Date(this.startDate()) : null;
