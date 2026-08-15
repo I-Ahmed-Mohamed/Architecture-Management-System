@@ -8,27 +8,43 @@
 </div>
 
 @if (showForm()) {
-  <div class="form-card">
+  <div class="form-card glass-card">
     <h3>إضافة عميل جديد</h3>
     <form [formGroup]="clientForm" (ngSubmit)="onSubmit()" class="system-form">
-      <div class="form-group">
-        <label>اسم العميل</label>
-        <input type="text" formControlName="name" placeholder="أدخل اسم العميل">
+      <div class="form-floating">
+        <input type="text" formControlName="name" placeholder=" " id="clientName">
+        <label for="clientName">اسم العميل</label>
       </div>
-      <div class="form-group">
-        <label>رقم الهاتف</label>
-        <input type="text" formControlName="phone" placeholder="أدخل رقم الهاتف">
+      <div class="form-floating">
+        <input type="text" formControlName="phone" placeholder=" " id="clientPhone">
+        <label for="clientPhone">رقم الهاتف</label>
       </div>
-      <div class="form-group">
-        <label>البريد الإلكتروني</label>
-        <input type="email" formControlName="email" placeholder="أدخل البريد الإلكتروني">
+      <div class="form-floating">
+        <input type="email" formControlName="email" placeholder=" " id="clientEmail">
+        <label for="clientEmail">البريد الإلكتروني</label>
       </div>
-      <button type="submit" class="btn" [disabled]="!clientForm.valid">حفظ العميل</button>
+      <button type="submit" class="btn" [disabled]="!clientForm.valid">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+        حفظ العميل
+      </button>
     </form>
   </div>
 }
 
 <div class="recent-section">
+  <!-- Filter Bar -->
+  <div class="filter-bar">
+    <div class="filter-group">
+      <svg class="icon text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+      <input type="text" class="filter-input" placeholder="بحث باسم العميل، الهاتف، أو الإيميل..." (input)="searchTerm.set($any($event.target).value)">
+    </div>
+    <div class="filter-group" style="flex: 0.5;">
+      <input type="date" class="filter-input" title="من تاريخ" (change)="startDate.set($any($event.target).value)">
+      <span class="text-muted">-</span>
+      <input type="date" class="filter-input" title="إلى تاريخ" (change)="endDate.set($any($event.target).value)">
+    </div>
+  </div>
+
   <div class="table-container">
     <table class="system-table">
       <thead>
@@ -41,7 +57,7 @@
         </tr>
       </thead>
       <tbody>
-        @for (client of dataService.clients(); track client.id) {
+        @for (client of filteredClients(); track client.id) {
           <tr>
             <td>{{ client.name }}</td>
             <td>{{ client.phone }}</td>

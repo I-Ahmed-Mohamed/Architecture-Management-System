@@ -208,42 +208,112 @@ a {
 .status.pending { background: rgba(255, 149, 0, 0.15); color: #FF9500; }
 .status.completed { background: rgba(10, 132, 255, 0.15); color: #0A84FF; }
 
-/* Forms */
+/* Modern Forms & Floating Labels */
 .form-card {
-  background: var(--secondary-color);
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   padding: 30px;
   border-radius: var(--border-radius-lg);
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border-highlight);
   margin-bottom: 30px;
+  box-shadow: var(--glass-shadow);
 }
 
-.system-form .form-group { margin-bottom: 20px; }
-.system-form label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 500;
-  color: var(--text-muted);
-  font-size: 0.9rem;
+.system-form {
+  display: grid;
+  gap: 20px;
 }
-.system-form input, .system-form select {
+
+.form-floating {
+  position: relative;
+}
+
+.form-floating input, .form-floating select {
   width: 100%;
-  padding: 14px 16px;
+  padding: 20px 16px 8px 16px;
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius-md);
-  background-color: rgba(0,0,0,0.2);
+  background-color: rgba(255, 255, 255, 0.05);
   color: var(--text-color);
   font-family: inherit;
+  font-size: 1rem;
   transition: all 0.3s;
 }
-:root[data-theme="light"] .system-form input, :root[data-theme="light"] .system-form select {
-  background-color: rgba(255,255,255,0.5);
+
+:root[data-theme="light"] .form-floating input, :root[data-theme="light"] .form-floating select {
+  background-color: rgba(0, 0, 0, 0.03);
 }
-.system-form input:focus, .system-form select:focus {
+
+.form-floating input:focus, .form-floating select:focus {
   outline: none;
   border-color: var(--accent-color);
-  box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.2);
+  background-color: rgba(10, 132, 255, 0.05);
+  box-shadow: 0 0 0 4px rgba(10, 132, 255, 0.15);
 }
+
+.form-floating label {
+  position: absolute;
+  top: 50%;
+  right: 16px;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+  transition: 0.3s ease all;
+  font-size: 0.95rem;
+}
+
+/* Floating behavior */
+.form-floating input:focus ~ label,
+.form-floating input:not(:placeholder-shown) ~ label,
+.form-floating select:focus ~ label,
+.form-floating select:not([value=""]) ~ label {
+  top: 14px;
+  font-size: 0.75rem;
+  color: var(--accent-color);
+  font-weight: 600;
+}
+
+/* Hide actual placeholder so label can act as placeholder */
+.form-floating input::placeholder {
+  color: transparent;
+}
+
 .system-form button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Filter Bar */
+.filter-bar {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 25px;
+  align-items: center;
+  background: var(--glass-bg);
+  padding: 15px 20px;
+  border-radius: var(--border-radius-lg);
+  border: 1px solid var(--border-color);
+}
+
+.filter-group {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.filter-input {
+  flex: 1;
+  padding: 12px 16px;
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--border-color);
+  background: transparent;
+  color: var(--text-color);
+  font-family: inherit;
+}
+
+.filter-input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+}
 
 /* Global Dashboard Layouts */
 .dashboard-grid {
