@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, output } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
@@ -9,5 +9,13 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   styleUrl: './sidebar.component.css'
 })
 export class SidebarComponent {
+  closeDrawer = output<void>();
 
+  onClose() {
+    this.closeDrawer.emit();
+  }
+
+  onNavClick() {
+    this.closeDrawer.emit();
+  }
 }

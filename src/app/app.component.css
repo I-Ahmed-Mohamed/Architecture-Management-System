@@ -3,38 +3,61 @@
   height: 100vh;
   overflow: hidden;
   background-color: var(--bg-light);
+  position: relative;
 }
 
-.sidebar-wrapper {
-  width: 260px;
+/* ===== Drawer Overlay ===== */
+.drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 998;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.drawer-wrapper {
+  position: fixed;
+  top: 0;
+  right: -300px; /* Hidden off-screen (RTL: right side) */
+  width: 280px;
+  height: 100vh;
   background-color: var(--sidebar-bg);
   backdrop-filter: blur(50px) saturate(200%);
   -webkit-backdrop-filter: blur(50px) saturate(200%);
-  border-left: 1px solid var(--border-color); /* Left border since RTL */
-  box-shadow: 10px 0 30px rgba(0,0,0,0.1); /* Premium depth shadow */
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  z-index: 10;
+  border-left: 1px solid var(--border-color);
+  box-shadow: -10px 0 40px rgba(0, 0, 0, 0.4);
+  z-index: 999;
+  transition: right 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+  overflow-y: auto;
 }
 
+.drawer-wrapper.open {
+  right: 0;
+}
+
+/* ===== Main Content (Full Width) ===== */
 .main-wrapper {
   flex-grow: 1;
+  width: 100%;
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
 
 .topbar-wrapper {
-  height: 70px;
-  background-color: var(--glass-bg);
-  backdrop-filter: blur(50px) saturate(200%);
-  -webkit-backdrop-filter: blur(50px) saturate(200%);
+  height: 64px;
+  background-color: var(--sidebar-bg);
   border-bottom: 1px solid var(--border-color);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
   display: flex;
   align-items: center;
-  padding: 0 30px;
+  padding: 0 24px;
   position: sticky;
   top: 0;
   z-index: 10;
@@ -42,20 +65,16 @@
 
 .content-wrapper {
   flex-grow: 1;
-  padding: 30px;
+  padding: 24px;
   overflow-y: auto;
   background-color: var(--bg-light);
 }
 
-@media (max-width: 768px) {
-  .sidebar-wrapper {
-    position: fixed;
-    right: -260px;
-    height: 100vh;
-    transition: right 0.3s ease;
+@media (max-width: 600px) {
+  .content-wrapper {
+    padding: 16px;
   }
-  
-  .sidebar-wrapper.open {
-    right: 0;
+  .topbar-wrapper {
+    padding: 0 16px;
   }
 }

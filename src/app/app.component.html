@@ -1,10 +1,18 @@
 <div class="system-layout">
-  <aside class="sidebar-wrapper">
-    <app-sidebar></app-sidebar>
+  <!-- Drawer Backdrop -->
+  @if (isDrawerOpen()) {
+    <div class="drawer-backdrop" (click)="closeDrawer()"></div>
+  }
+
+  <!-- Drawer Sidebar -->
+  <aside class="drawer-wrapper" [class.open]="isDrawerOpen()">
+    <app-sidebar (closeDrawer)="closeDrawer()"></app-sidebar>
   </aside>
+
+  <!-- Main Content (Full Width) -->
   <div class="main-wrapper">
     <header class="topbar-wrapper">
-      <app-topbar></app-topbar>
+      <app-topbar (openMenu)="openDrawer()"></app-topbar>
     </header>
     <main class="content-wrapper">
       <router-outlet></router-outlet>

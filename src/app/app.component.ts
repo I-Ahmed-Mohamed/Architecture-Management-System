@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { TopbarComponent } from './components/topbar/topbar.component';
@@ -12,4 +12,13 @@ import { TopbarComponent } from './components/topbar/topbar.component';
 })
 export class AppComponent {
   title = 'architecture-system';
+  isDrawerOpen = signal(false);
+
+  openDrawer() {
+    this.isDrawerOpen.set(true);
+  }
+
+  closeDrawer() {
+    this.isDrawerOpen.set(false);
+  }
 }
