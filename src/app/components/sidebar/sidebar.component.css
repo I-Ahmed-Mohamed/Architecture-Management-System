@@ -21,17 +21,10 @@
 }
 
 .drawer-logo {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  object-fit: cover;
-}
-
-.drawer-title {
-  font-family: 'Outfit', sans-serif;
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: var(--text-color);
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  object-fit: contain;
 }
 
 .close-btn {

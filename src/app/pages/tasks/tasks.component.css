@@ -239,28 +239,12 @@
   border-radius: 2px;
 }
 
-/* Hover Actions Overlay */
+/* Task Actions */
 .task-actions-overlay {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 15px;
-  background: linear-gradient(0deg, var(--bg-color) 40%, transparent);
+  margin-top: 15px;
   display: flex;
   justify-content: stretch;
   gap: 10px;
-  transform: translateY(100%);
-  opacity: 0;
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-:root[data-theme="light"] .task-actions-overlay {
-  background: linear-gradient(0deg, #ffffff 40%, rgba(255,255,255,0));
-}
-
-.premium-card:hover .task-actions-overlay {
-  transform: translateY(0);
-  opacity: 1;
 }
 
 .task-actions-overlay.split {
