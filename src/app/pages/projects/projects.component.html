@@ -1,10 +1,18 @@
 <div class="page-header">
-  <h2 class="page-title">المشاريع والتنفيذ</h2>
+  <h2 class="page-title">إدارة المشاريع</h2>
   <div class="page-actions">
     <button class="btn-premium" (click)="toggleForm()">
       إضافة مشروع جديد 
       <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
     </button>
+  </div>
+</div>
+
+<!-- Quick Stats -->
+<div class="quick-stats" style="margin-bottom: 25px;">
+  <div class="stat-pill">
+    <span class="stat-label">المشاريع الجارية</span>
+    <span class="stat-number">{{ dataService.activeProjectsCount() }}</span>
   </div>
 </div>
 

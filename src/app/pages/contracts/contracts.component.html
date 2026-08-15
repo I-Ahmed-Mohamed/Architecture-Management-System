@@ -8,6 +8,18 @@
   </div>
 </div>
 
+<!-- Quick Stats -->
+<div class="quick-stats" style="margin-bottom: 25px;">
+  <div class="stat-pill">
+    <span class="stat-label">إجمالي العقود</span>
+    <span class="stat-number">{{ dataService.expectedRevenue() | currency:'EGP':'symbol':'1.0-0' }}</span>
+  </div>
+  <div class="stat-pill green">
+    <span class="stat-label">المحصّل</span>
+    <span class="stat-number">{{ dataService.collectedRevenue() | currency:'EGP':'symbol':'1.0-0' }}</span>
+  </div>
+</div>
+
 <!-- Filters Bar -->
 <div class="filter-bar">
   <div class="filter-group">

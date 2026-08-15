@@ -54,6 +54,33 @@ export class TreasuryComponent {
 
   currentBalance = signal<number>(125000); // Dummy initial balance
 
+  egyptianBanks = [
+    'البنك الأهلي المصري (NBE)',
+    'بنك مصر (Banque Misr)',
+    'البنك التجاري الدولي (CIB)',
+    'بنك القاهرة (Banque du Caire)',
+    'بنك الإسكندرية (AlexBank)',
+    'البنك العربي الأفريقي الدولي (AAIB)',
+    'بنك قطر الوطني الأهلي (QNB Alahli)',
+    'بنك التعمير والإسكان (HDB)',
+    'بنك فيصل الإسلامي',
+    'البنك الكويتي الوطني (NBK)',
+    'مصرف أبوظبي الإسلامي (ADIB)',
+    'بنك إتش إس بي سي (HSBC)',
+    'كريدي أجريكول (Crédit Agricole)',
+    'بنك الإمارات دبي الوطني (Emirates NBD)',
+    'البنك المصري الخليجي (EG Bank)',
+    'المصرف المتحد (The United Bank)',
+    'بنك الشركة المصرفية العربية الدولية (SAIB)',
+    'بنك التنمية الصناعية',
+    'البنك العقاري المصري العربي',
+    'بنك قناة السويس',
+    'البنك الأهلي الكويتي (ABK)',
+    'فودافون كاش (Vodafone Cash)',
+    'انستا باي (InstaPay)',
+    'أخرى (Other)'
+  ];
+
   activeTab = signal<'cash' | 'checks'>('cash');
   showCheckForm = signal<boolean>(false);
 
@@ -62,14 +89,22 @@ export class TreasuryComponent {
     amount: new FormControl('', Validators.required),
     dueDate: new FormControl('', Validators.required),
     payee: new FormControl('', Validators.required),
+    bankName: new FormControl('', Validators.required),
     type: new FormControl<'in' | 'out'>('in', Validators.required),
     status: new FormControl<'pending' | 'cleared' | 'bounced'>('pending', Validators.required)
+  });
+
+  treasuryForm = new FormGroup({
+    amount: new FormControl('', Validators.required),
+    reason: new FormControl('', Validators.required),
+    handledBy: new FormControl('', Validators.required),
+    paymentMethod: new FormControl('كاش (خزينة)', Validators.required)
   });
 
   toggleCheckForm() {
     this.showCheckForm.set(!this.showCheckForm());
     if (!this.showCheckForm()) {
-      this.checkForm.reset({ type: 'in', status: 'pending' });
+      this.checkForm.reset({ type: 'in', status: 'pending', bankName: '' });
     }
   }
 
@@ -81,6 +116,7 @@ export class TreasuryComponent {
         amount: Number(formVal.amount),
         dueDate: formVal.dueDate as string,
         payee: formVal.payee as string,
+        bankName: formVal.bankName as string,
         type: formVal.type as 'in' | 'out',
         status: formVal.status as 'pending' | 'cleared' | 'bounced'
       };

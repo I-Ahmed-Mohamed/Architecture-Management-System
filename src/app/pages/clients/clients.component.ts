@@ -97,30 +97,42 @@ export class ClientsComponent {
     this.selectedClient.set(null);
   }
 
-  async exportStatementPDF() {
-    const data = document.getElementById('printableStatement');
-    if (!data) return;
+  exportStatementPDF() {
+    const printContent = document.getElementById('printableStatement');
+    if (!printContent) return;
 
-    try {
-      const canvas = await html2canvas(data, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: document.body.classList.contains('light-theme') ? '#f2f2f7' : '#000000'
-      });
-
-      const imgWidth = 210;
-      const pageHeight = 297;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      
-      const imgData = canvas.toDataURL('image/png');
-      pdf.addImage(imgData, 'PNG', 0, 10, imgWidth, imgHeight);
-      
-      pdf.save(`Account_Statement_${this.selectedClient()?.name}.pdf`);
-    } catch (err) {
-      console.error('Error generating PDF:', err);
-      alert('حدث خطأ أثناء تصدير ملف الـ PDF.');
+    // We can use a clean popup window to print the specific element
+    const WindowPrt = window.open('', '', 'left=0,top=0,width=900,height=900,toolbar=0,scrollbars=0,status=0');
+    if (WindowPrt) {
+      WindowPrt.document.write(`
+        <html dir="rtl">
+          <head>
+            <title>كشف حساب عميل - ${this.selectedClient()?.name}</title>
+            <style>
+              body { 
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+                padding: 20px; 
+                color: #000; 
+                background: #fff;
+                -webkit-print-color-adjust: exact; 
+                color-adjust: exact;
+                print-color-adjust: exact;
+              }
+              @page { size: A4; margin: 15mm; }
+            </style>
+          </head>
+          <body>
+            ${printContent.innerHTML}
+          </body>
+        </html>
+      `);
+      WindowPrt.document.close();
+      WindowPrt.focus();
+      // Give images a moment to load if any
+      setTimeout(() => {
+        WindowPrt.print();
+        WindowPrt.close();
+      }, 500);
     }
   }
 }

@@ -8,6 +8,14 @@
   </div>
 </div>
 
+<!-- Quick Stats -->
+<div class="quick-stats" style="margin-bottom: 25px;">
+  <div class="stat-pill">
+    <span class="stat-label">إجمالي العملاء</span>
+    <span class="stat-number">{{ dataService.totalClientsCount() }}</span>
+  </div>
+</div>
+
 @if (showForm()) {
   <div class="side-panel-overlay" (click)="toggleForm()">
     <div class="side-panel" (click)="$event.stopPropagation()">
